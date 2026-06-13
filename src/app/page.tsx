@@ -1,4 +1,4 @@
-import { LandingPage } from "@/components/LandingPage";
+import LandingPage from "@/components/LandingPage";
 import { getSiteContent } from "@/lib/content";
 import { unstable_noStore as noStore } from "next/cache";
 

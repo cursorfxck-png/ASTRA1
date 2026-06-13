@@ -1097,6 +1097,18 @@ body {
 }
 
 @media (max-width: 750px) {
+  html {
+    font-size: 58.5%; /* Slightly smaller base for mobile */
+  }
+
+  body {
+    font-size: 1.5rem;
+  }
+
+  .page-width {
+    padding: 0 1.6rem;
+  }
+
   .grid--4-col,
   .grid--3-col,
   .collage,
@@ -1104,92 +1116,22 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .slideshow {
-    height: 100vh;
-  }
-
-  .slide-arrow {
-    width: 4.2rem;
-    height: 4.2rem;
-  }
-
-  .slide-arrow svg {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .video-control-group {
-    top: 1rem;
-    right: 1rem;
-    gap: 1.2rem;
-  }
-
-  .video-controls {
-    transition: all 0.3s ease;
-  }
-
-  .video-controls.play-pause {
-    width: 5rem;
-    height: 5rem;
-  }
-
-  .video-controls.play-pause svg {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .video-controls.mute-unmute {
-    width: 4rem;
-    height: 4rem;
-  }
-
-  .video-controls.mute-unmute svg {
-    width: 2.2rem;
-    height: 2.2rem;
-  }
-
-  .footer__content-bottom-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .footer__localization {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .header__heading {
-    padding-left: 0;
-  }
-
-  .header__icons {
+  .grid {
     gap: 1.6rem;
   }
 
-
-
-  .cms-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .data-table {
-    display: block;
-    overflow-x: auto;
-  }
-
-  .slide {
-    padding-bottom: 3rem;
-  }
-
-  /* Mobile Hero Section - Reduced Height and Responsive */
+  /* Mobile Hero Section - Optimized */
   .slideshow {
     height: 60vh;
     max-height: 60vh;
     min-height: 400px;
   }
 
-  .hero-slide-image img {
+  .slide {
+    padding-bottom: 4rem;
+  }
+
+  .slide img {
     object-fit: contain !important;
   }
 
@@ -1197,40 +1139,24 @@ body {
     object-fit: cover;
   }
 
-  /* Adjust video controls for mobile */
-  .video-control-group {
-    top: 1rem;
-    right: 1rem;
-    gap: 1rem;
-  }
-
-  .video-controls.play-pause {
-    width: 4.5rem;
-    height: 4.5rem;
-  }
-
-  .video-controls.play-pause svg {
-    width: 2.8rem;
-    height: 2.8rem;
-  }
-
-  .video-controls.mute-unmute {
-    width: 3.5rem;
-    height: 3.5rem;
-  }
-
-  .video-controls.mute-unmute svg {
-    width: 2rem;
-    height: 2rem;
-  }
-
   .slide-content {
-    padding-bottom: 2rem;
+    padding: 0 2rem 2rem;
   }
 
   .slide-content .button {
-    font-size: 1.4rem;
-    padding: 1rem 2.4rem;
+    font-size: 1.3rem;
+    padding: 1rem 2rem;
+  }
+
+  /* Slide arrows - mobile optimized */
+  .slide-arrow {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .slide-arrow svg {
+    width: 1.8rem;
+    height: 1.8rem;
   }
 
   .slide-arrow--left {
@@ -1239,6 +1165,154 @@ body {
 
   .slide-arrow--right {
     right: 1rem;
+  }
+
+  /* Rich text section */
+  .rich-text {
+    padding: 4rem 2rem;
+  }
+
+  .rich-text h2 {
+    font-size: 2.8rem;
+    line-height: 1.2;
+  }
+
+  .rich-text p {
+    font-size: 1.5rem;
+  }
+
+  /* Title adjustments */
+  .title {
+    font-size: 2.4rem;
+  }
+
+  .title-wrapper {
+    margin: 4rem 0 2.5rem;
+  }
+
+  /* Card content */
+  .card__heading {
+    font-size: 1.4rem;
+  }
+
+  .price {
+    font-size: 1.3rem;
+  }
+
+  /* Newsletter */
+  .newsletter {
+    padding: 5rem 2rem;
+  }
+
+  .newsletter h2 {
+    font-size: 2.4rem;
+  }
+
+  .newsletter-form {
+    max-width: 100%;
+  }
+
+  .newsletter-form input {
+    font-size: 1.4rem;
+    padding: 1.3rem;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 5rem 0 3rem;
+  }
+
+  .footer__content-bottom-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .footer__localization {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .footer__copyright {
+    font-size: 1.2rem;
+  }
+
+  /* Header mobile optimization */
+  .header {
+    padding: 1.2rem 1.6rem;
+  }
+
+  .header__heading-logo {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .header__icons {
+    gap: 1.4rem;
+  }
+
+  .header__icon svg {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .cart-icon svg {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+
+  /* Button adjustments */
+  .button {
+    font-size: 1.4rem;
+    padding: 1.1rem 2.4rem;
+  }
+
+  /* Section spacing */
+  .section-space-bottom {
+    padding-bottom: 3rem;
+  }
+
+  .collage-section {
+    padding: 3rem 0;
+  }
+
+  /* CMS adjustments */
+  .cms-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.6rem;
+  }
+
+  .cms-header h2 {
+    font-size: 2rem;
+  }
+
+  .cms-container {
+    grid-template-columns: 1fr;
+    padding: 1.6rem;
+    gap: 1.6rem;
+  }
+
+  .cms-content {
+    padding: 2rem;
+  }
+
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    font-size: 1.3rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 1rem 0.8rem;
+    min-width: 100px;
+  }
+
+  .data-table img {
+    width: 50px;
+    height: 50px;
   }
 }
 
@@ -1978,4 +2052,98 @@ body {
   .auth-profile-scroll-inner {
     padding: clamp(2.4rem, 3vw, 4rem) !important;
   }
+}
+
+/* ============================================
+   Additional Responsive Fixes
+   ============================================ */
+
+/* Ensure slideshow images are always visible */
+.slideshow img,
+.slideshow video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix z-index stacking for slides */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.slide.active {
+  z-index: 2;
+}
+
+/* Ensure images fill the container */
+.slide img {
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+/* Mobile - reduce hero height for better UX */
+@media (max-width: 768px) {
+  .slideshow {
+    height: 50vh;
+    min-height: 350px;
+    max-height: 50vh;
+  }
+  
+  .page-width {
+    padding: 0 1.6rem;
+  }
+  
+  .rich-text {
+    padding: 4rem 2rem;
+  }
+  
+  .rich-text h2 {
+    font-size: 2.4rem;
+  }
+  
+  .title {
+    font-size: 2.4rem;
+  }
+  
+  .button {
+    font-size: 1.4rem;
+    padding: 1rem 2.4rem;
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 990px) {
+  .slideshow {
+    height: 60vh;
+    max-height: 60vh;
+  }
+  
+  .grid--4-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop */
+@media (min-width: 991px) {
+  .slideshow {
+    height: 85vh;
+    max-height: 85vh;
+  }
+}
+
+/* Prevent horizontal scroll */
+body,
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+* {
+  max-width: 100%;
 }

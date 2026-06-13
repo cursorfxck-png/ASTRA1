@@ -74,7 +74,36 @@ VALUES (
       {"label": "Track Your Order", "href": "#"},
       {"label": "About Us", "href": "#"}
     ],
-    "heroSlides": [],
+    "heroSlides": [
+      {
+        "id": "slide-1781293648873",
+        "mediaType": "image",
+        "mediaUrl": "https://bfgynclddehatuwfxehr.supabase.co/storage/v1/object/public/astra-bucket/uploads/1781293647514-1000133310.jpg",
+        "buttonText": "",
+        "buttonUrl": ""
+      },
+      {
+        "id": "slide-1781325604060",
+        "mediaType": "image",
+        "mediaUrl": "https://bfgynclddehatuwfxehr.supabase.co/storage/v1/object/public/astra-bucket/uploads/1781325605732-img-20260314-wa0002.jpg",
+        "buttonText": "Shop now",
+        "buttonUrl": ""
+      },
+      {
+        "id": "slide-1781325641435",
+        "mediaType": "image",
+        "mediaUrl": "https://bfgynclddehatuwfxehr.supabase.co/storage/v1/object/public/astra-bucket/uploads/1781325643770-img-20260309-wa0003.jpg",
+        "buttonText": "",
+        "buttonUrl": ""
+      },
+      {
+        "id": "slide-1781333073754",
+        "mediaType": "image",
+        "mediaUrl": "https://bfgynclddehatuwfxehr.supabase.co/storage/v1/object/public/astra-bucket/uploads/1781333046264-gcfu6wyphw1waroijpngnmolyk.avif",
+        "buttonText": "",
+        "buttonUrl": ""
+      }
+    ],
     "richText": {
       "title": "Every detail carries a story.",
       "subtitle": "ASTRA BUILD DIFFERENT",
@@ -82,23 +111,102 @@ VALUES (
       "buttonUrl": "#collections"
     },
     "collectionsHeading": "Shop by Collections!",
-    "collections": [],
+    "collections": [
+      {
+        "id": "collection-harry-potter",
+        "title": "Harry Potter",
+        "imageUrl": "https://sneakcares.site/cdn/shop/collections/Koleksi_Harry_potter.jpg?v=1751966891&width=750",
+        "linkUrl": "#"
+      },
+      {
+        "id": "collection-adventure-time",
+        "title": "Adventure Time",
+        "imageUrl": "https://sneakcares.site/cdn/shop/collections/Koleksi_Adventure_Time.jpg?v=1776070538&width=750",
+        "linkUrl": "#"
+      },
+      {
+        "id": "collection-doraemon",
+        "title": "Doraemon",
+        "imageUrl": "https://sneakcares.site/cdn/shop/collections/Koleksi_DORAEMON_c2ddf074-6afc-421b-98c6-39f4b2688695.jpg?v=1778024661&width=750",
+        "linkUrl": "#"
+      },
+      {
+        "id": "collection-one-piece",
+        "title": "One Piece",
+        "imageUrl": "https://sneakcares.site/cdn/shop/collections/Koleksi_One_Piece_73c68969-ea32-4331-8853-513c40c39383.jpg?v=1773815178&width=750",
+        "linkUrl": "#"
+      }
+    ],
     "collageOne": {
-      "title": "Featured Collection",
-      "largeCard": {"title": "Featured", "imageUrl": "", "linkUrl": "#", "imageRatio": "100%"},
-      "stackedCards": []
+      "title": "Time to space with Snoopy!",
+      "largeCard": {
+        "title": "Snoopy Poster",
+        "imageUrl": "https://sneakcares.site/cdn/shop/files/Lu_ada_fotografer_yang_sudah_202605071840.jpg?v=1778154183&width=1500",
+        "linkUrl": "#",
+        "imageRatio": "133.9%"
+      },
+      "stackedCards": [
+        {
+          "title": "CUSTOM PAINT SNEAKERS SNOOPY WITH AIR FORCE",
+          "imageUrl": "https://sneakcares.site/cdn/shop/files/SnoopySnoopy.jpg?v=1777630113&width=1080",
+          "price": "Rp 5.400.000,00 IDR",
+          "linkUrl": "#",
+          "imageRatio": "108.2%"
+        },
+        {
+          "title": "New Drop!",
+          "imageUrl": "https://sneakcares.site/cdn/shop/collections/Koleksi_ND.jpg?v=1761524015&width=1080",
+          "linkUrl": "#",
+          "imageRatio": "125%"
+        }
+      ]
     },
     "featuredSection": {
-      "title": "New Drops",
-      "items": [],
+      "title": "New Drop from Westeros!",
+      "items": [
+        {
+          "title": "CUSTOM SNEAKERS GAME OF THRONE HOUSE OF STARK",
+          "imageUrl": "https://sneakcares.site/cdn/shop/files/Game_Of_ThronesStark.jpg?v=1776148022&width=1080",
+          "price": "Rp 5.300.000,00 IDR",
+          "linkUrl": "#",
+          "imageRatio": "100%"
+        },
+        {
+          "title": "CUSTOM SNEAKERS GAME OF THRONE HOUSE OF GREYJOY",
+          "imageUrl": "https://sneakcares.site/cdn/shop/files/GameOfThronesGreyjoy.jpg?v=1779201726&width=1080",
+          "price": "Rp 5.300.000,00 IDR",
+          "linkUrl": "#",
+          "imageRatio": "100%"
+        },
+        {
+          "title": "CUSTOM SNEAKERS GAME OF THRONE HOUSE OF LANNISTER",
+          "imageUrl": "https://sneakcares.site/cdn/shop/files/Game_Of_ThronesLannister.jpg?v=1776148023&width=1080",
+          "price": "Rp 5.300.000,00 IDR",
+          "linkUrl": "#",
+          "imageRatio": "100%"
+        }
+      ],
       "buttonText": "View all",
       "buttonUrl": "#"
     },
     "collageTwo": {
-      "title": "More to Explore",
+      "title": "Coming from Mordor!",
       "reverse": true,
-      "largeCard": {"title": "Explore", "imageUrl": "", "linkUrl": "#", "imageRatio": "100%"},
-      "stackedCards": []
+      "largeCard": {
+        "title": "LOTR Poster",
+        "imageUrl": "https://sneakcares.site/cdn/shop/files/Ganti_sepatu_pada_202604131912.jpg?v=1776993991&width=1500",
+        "linkUrl": "#",
+        "imageRatio": "133.9%"
+      },
+      "stackedCards": [
+        {
+          "title": "CUSTOM SNEAKERS LORD OF THE RINGS UNOFFICIAL",
+          "imageUrl": "https://sneakcares.site/cdn/shop/files/Lord_Of_TheRings.jpg?v=1776618732&width=1080",
+          "price": "From Rp 6.600.000,00 IDR",
+          "linkUrl": "#",
+          "imageRatio": "100%"
+        }
+      ]
     },
     "newsletter": {
       "title": "Subscribe to our emails",
@@ -113,7 +221,9 @@ VALUES (
   }'::jsonb,
   'system'
 )
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+  content = EXCLUDED.content,
+  updated_by = EXCLUDED.updated_by;
 
 -- -----------------------------------------------------
 -- 2. Storage bucket for media uploads
