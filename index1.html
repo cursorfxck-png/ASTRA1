@@ -1,0 +1,2707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Astra Custom – Custom Sneakers</title>
+<meta name="description" content="Astra Custom – Hand-painted custom sneakers. Create your own design.">
+<meta property="og:title" content="Astra Custom">
+<meta property="og:description" content="Hand-painted custom sneakers. Each pair tells a unique story.">
+<meta property="og:image" content="https://framerusercontent.com/images/GcFu6wYPhW1waroIjPNGnmOlYk.png?width=500&height=500">
+<meta property="og:type" content="website">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ===================== RESET & BASE ===================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#000;--white:#fff;--gray-light:#f5f5f5;--gray-mid:#e0e0e0;
+  --gray-dark:#555;--accent:#1a1a1a;--text:#111;--border:#ddd;
+  --font-main:'Helvetica Neue',Arial,sans-serif;
+  --nav-h:60px;--announce-h:36px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-main);color:var(--text);background:#fff;line-height:1.5;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+ul{list-style:none}
+input,select,textarea{font-family:inherit}
+
+/* ===================== ANNOUNCEMENT BAR ===================== */
+#announce-bar{
+  background:#000;color:#fff;text-align:center;
+  font-size:12px;letter-spacing:.08em;padding:0 16px;
+  height:var(--announce-h);display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:200;
+}
+#announce-bar span{font-weight:600}
+
+/* ===================== HEADER / NAV ===================== */
+#site-header{
+  background:#fff;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:150;
+  height:var(--nav-h);
+}
+.header-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:100%;padding:0 20px;gap:16px;
+}
+.nav-links{display:flex;align-items:center;gap:24px}
+.nav-links a{font-size:13px;letter-spacing:.05em;font-weight:500;white-space:nowrap}
+.nav-links a:hover{text-decoration:underline}
+.site-logo{
+  display:flex;align-items:center;gap:10px;
+  font-size:16px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;
+  text-align:center;line-height:1.2;white-space:nowrap;
+}
+.site-logo img{width:36px;height:36px;object-fit:contain;border-radius:50%}
+.site-logo .sub{font-size:8px;font-weight:400;letter-spacing:.12em;display:block;margin-top:1px}
+.logo-text{display:flex;flex-direction:column}
+.header-icons{display:flex;align-items:center;gap:16px}
+.header-icons a,.header-icons button{font-size:13px;letter-spacing:.05em;font-weight:500;display:flex;align-items:center;gap:4px}
+.header-icons a:hover,.header-icons button:hover{text-decoration:underline}
+.cart-count{
+  background:#000;color:#fff;border-radius:50%;
+  width:16px;height:16px;font-size:10px;
+  display:flex;align-items:center;justify-content:center;font-weight:700;
+}
+
+/* ====== HAMBURGER – Apple 2-line style ====== */
+.hamburger{
+  display:none;flex-direction:column;justify-content:center;gap:6px;
+  padding:6px;width:36px;height:36px;position:relative;z-index:1;
+}
+.hamburger span{
+  display:block;width:22px;height:1.5px;background:#000;
+  transition:transform .4s cubic-bezier(.23,1,.32,1), opacity .3s ease, width .3s ease;
+  transform-origin:center;
+}
+.hamburger.open span:nth-child(1){transform:translateY(3.75px) rotate(45deg)}
+.hamburger.open span:nth-child(2){transform:translateY(-3.75px) rotate(-45deg)}
+
+/* Mobile nav – full overlay Apple style */
+#mobile-nav{
+  display:block;position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  z-index:300;flex-direction:column;padding:80px 32px 32px;
+  overflow-y:auto;
+  transform:translateY(-100%);
+  transition:transform .5s cubic-bezier(.23,1,.32,1);
+  pointer-events:none;
+}
+#mobile-nav.open{transform:translateY(0);pointer-events:all}
+#mobile-nav a{
+  display:block;font-size:28px;padding:18px 0;border-bottom:1px solid #f0f0f0;
+  font-weight:700;letter-spacing:-.01em;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .3s ease, transform .3s ease;
+}
+#mobile-nav.open a{opacity:1;transform:translateY(0)}
+#mobile-nav.open a:nth-child(1){transition-delay:.1s}
+#mobile-nav.open a:nth-child(2){transition-delay:.15s}
+#mobile-nav.open a:nth-child(3){transition-delay:.2s}
+#mobile-nav.open a:nth-child(4){transition-delay:.25s}
+#mobile-nav.open a:nth-child(5){transition-delay:.3s}
+#mobile-nav .nav-logo{
+  position:absolute;top:20px;left:32px;display:flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:900;letter-spacing:.08em;
+}
+#mobile-nav .nav-logo img{width:28px;height:28px;border-radius:50%}
+
+/* ===================== PAGES ===================== */
+.page{display:none}
+.page.active{display:block}
+
+/* ===================== HERO – supports video + image ===================== */
+#hero{position:relative;overflow:hidden;background:#000;height:100vh;max-height:860px}
+.hero-slides{display:flex;height:100%;transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.hero-slide{min-width:100%;height:100%;position:relative;overflow:hidden}
+.hero-slide img,.hero-slide video{width:100%;height:100%;object-fit:cover;opacity:.9}
+.hero-slide video{display:block}
+.hero-overlay{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;padding:80px 20px;
+  background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%);
+  text-align:center;color:#fff;
+}
+.hero-overlay h2{
+  font-size:clamp(28px,5vw,56px);font-weight:900;letter-spacing:-.03em;
+  max-width:760px;margin-bottom:14px;line-height:1.05;
+  text-shadow:0 2px 20px rgba(0,0,0,.3);
+}
+.hero-overlay p{font-size:15px;max-width:520px;margin-bottom:28px;opacity:.9;line-height:1.6}
+.btn-primary{
+  display:inline-block;background:#fff;color:#000;
+  padding:15px 40px;font-size:12px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;transition:.2s;
+}
+.btn-primary:hover{background:#f0f0f0}
+.btn-dark{
+  display:inline-block;background:#000;color:#fff;
+  padding:15px 40px;font-size:12px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;transition:.2s;
+}
+.btn-dark:hover{background:#333}
+
+/* Hero controls */
+.hero-controls{position:absolute;bottom:24px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:16px}
+.hero-dots{display:flex;gap:8px;align-items:center}
+.hero-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.45);border:none;cursor:pointer;transition:.25s}
+.hero-dot.active{background:#fff;transform:scale(1.2)}
+.hero-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.15);backdrop-filter:blur(6px);color:#fff;border:1px solid rgba(255,255,255,.2);cursor:pointer;
+  width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:.2s;border-radius:50%;
+}
+.hero-arrow:hover{background:rgba(255,255,255,.3)}
+.hero-prev{left:20px}
+.hero-next{right:20px}
+
+/* Video Play/Mute controls – Apple style SVG icons */
+.hero-video-controls{
+  position:absolute;bottom:24px;right:20px;
+  display:flex;gap:8px;z-index:10;
+}
+.hero-vc-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:.2s;color:#fff;
+}
+.hero-vc-btn:hover{background:rgba(0,0,0,.7)}
+.hero-vc-btn svg{width:16px;height:16px;fill:currentColor}
+
+/* ===================== SECTION GENERIC ===================== */
+.section{padding:64px 20px;max-width:1400px;margin:0 auto}
+.section-sm{padding:40px 20px;max-width:1400px;margin:0 auto}
+.section-title{font-size:clamp(22px,3vw,34px);font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.section-sub{font-size:13px;color:var(--gray-dark);margin-bottom:32px}
+.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:8px}
+.view-all{font-size:12px;text-decoration:underline;letter-spacing:.05em}
+
+/* ===================== COLLECTIONS GRID ===================== */
+.collections-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+}
+.collection-card{position:relative;overflow:hidden;aspect-ratio:3/4;cursor:pointer}
+.collection-card img{width:100%;height:100%;object-fit:cover;transition:.5s}
+.collection-card:hover img{transform:scale(1.06)}
+.collection-card-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,0,0,.78),transparent);
+  padding:44px 16px 18px;color:#fff;
+}
+.collection-card-label h3{font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+
+/* ===================== PROMO SPLIT ===================== */
+.promo-split{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#000}
+.promo-left{position:relative;overflow:hidden;aspect-ratio:4/5}
+.promo-left img{width:100%;height:100%;object-fit:cover;opacity:.88}
+.promo-right{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:56px 52px;background:#fff;
+}
+.promo-right .eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#888;margin-bottom:18px}
+.promo-right h2{font-size:clamp(22px,3vw,40px);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:18px}
+.promo-right p{font-size:14px;color:#555;line-height:1.75;margin-bottom:30px;max-width:360px}
+
+/* ===================== PRODUCT GRID ===================== */
+.products-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:28px 16px;
+}
+.product-card{cursor:pointer}
+.product-card-img{
+  position:relative;overflow:hidden;aspect-ratio:1/1;background:#f5f5f5;margin-bottom:12px;
+}
+.product-card-img img{width:100%;height:100%;object-fit:cover;transition:.5s}
+.product-card:hover .product-card-img img{transform:scale(1.06)}
+.product-card-badge{
+  position:absolute;top:8px;left:8px;
+  background:#000;color:#fff;font-size:10px;font-weight:700;
+  letter-spacing:.08em;padding:3px 8px;
+}
+.product-card-info h3{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:6px}
+.product-card-price{font-size:13px;color:#333;font-weight:700}
+.product-card-price del{color:#aaa;margin-right:4px;font-size:12px;font-weight:400}
+.product-card-price .mrp-label{font-size:10px;color:#888;font-weight:400;margin-left:2px}
+
+/* ===================== BANNER FULL ===================== */
+.banner-full{position:relative;overflow:hidden;height:460px;margin:0}
+.banner-full img,.banner-full video{width:100%;height:100%;object-fit:cover;display:block}
+.banner-full-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right,rgba(0,0,0,.62),transparent);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 64px;color:#fff;
+}
+.banner-full-overlay .eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.8;margin-bottom:14px}
+.banner-full-overlay h2{font-size:clamp(26px,4.5vw,52px);font-weight:900;letter-spacing:-.03em;max-width:520px;margin-bottom:22px;line-height:1.02}
+
+/* ===================== STORY CARDS ===================== */
+.stories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.story-card{cursor:pointer}
+.story-card-img{aspect-ratio:4/3;overflow:hidden;margin-bottom:14px;background:#f0f0f0}
+.story-card-img img{width:100%;height:100%;object-fit:cover;transition:.5s}
+.story-card:hover .story-card-img img{transform:scale(1.04)}
+.story-card-date{font-size:11px;color:#888;margin-bottom:6px;letter-spacing:.05em}
+.story-card h3{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:8px}
+.story-card p{font-size:12px;color:#666;line-height:1.65;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ===================== ADVENTURE SECTION (perfect UI) ===================== */
+#adventure-section{
+  position:relative;overflow:hidden;
+  background:#000;color:#fff;padding:0;
+  min-height:520px;display:flex;align-items:center;
+}
+#adventure-section .adv-bg{
+  position:absolute;inset:0;
+  background:url('https://sneakcares.site/cdn/shop/files/WEB_ADV.jpg?v=1777450670&width=1400') center/cover no-repeat;
+  opacity:.35;
+}
+#adventure-section .adv-content{
+  position:relative;z-index:1;max-width:1400px;margin:0 auto;
+  padding:80px 48px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.adv-text .adv-eyebrow{
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);margin-bottom:16px;display:block;
+}
+.adv-text h2{
+  font-size:clamp(32px,5vw,60px);font-weight:900;
+  letter-spacing:-.04em;line-height:1.0;margin-bottom:20px;
+}
+.adv-text h2 em{font-style:normal;color:rgba(255,255,255,.55)}
+.adv-text p{font-size:15px;line-height:1.75;color:rgba(255,255,255,.78);max-width:400px;margin-bottom:32px}
+.adv-image-wrap{
+  position:relative;aspect-ratio:4/5;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);
+}
+.adv-image-wrap img{width:100%;height:100%;object-fit:cover}
+.adv-badge{
+  position:absolute;bottom:-12px;right:-12px;
+  width:96px;height:96px;background:#fff;color:#000;
+  border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  font-size:9px;font-weight:800;letter-spacing:.08em;line-height:1.3;
+  text-transform:uppercase;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+
+/* ===================== MORDOR SECTION ===================== */
+#mordor-section{
+  background:#0a0a0a;
+}
+#mordor-section .promo-right{background:#0a0a0a;color:#fff}
+#mordor-section .promo-right .eyebrow{color:#555}
+#mordor-section .promo-right h2{color:#fff}
+#mordor-section .promo-right p{color:#888}
+
+/* ===================== NEWSLETTER ===================== */
+#newsletter{background:#000;color:#fff;padding:72px 20px;text-align:center}
+#newsletter h2{font-size:clamp(22px,3vw,36px);font-weight:900;margin-bottom:8px;letter-spacing:-.02em}
+#newsletter p{font-size:14px;opacity:.65;margin-bottom:32px}
+.newsletter-form{display:flex;justify-content:center;gap:0;max-width:480px;margin:0 auto}
+.newsletter-form input{
+  flex:1;padding:15px 18px;font-size:13px;border:1px solid #333;
+  background:#111;color:#fff;outline:none;
+}
+.newsletter-form input::placeholder{color:#444}
+.newsletter-form button{
+  padding:15px 26px;background:#fff;color:#000;font-size:11px;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
+}
+.newsletter-form button:hover{background:#ddd}
+
+/* ===================== FOOTER ===================== */
+#site-footer{background:#f5f5f5;padding:52px 20px 28px;border-top:1px solid #e0e0e0}
+.footer-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:32px;
+  max-width:1400px;margin:0 auto 44px;
+}
+.footer-col h4{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px}
+.footer-col a,.footer-col p{display:block;font-size:13px;color:#555;margin-bottom:8px}
+.footer-col a:hover{text-decoration:underline}
+.footer-bottom{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding-top:24px;border-top:1px solid #ddd;font-size:11px;color:#888;
+}
+.payment-icons{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.payment-icon{
+  background:#fff;border:1px solid #ddd;border-radius:3px;
+  padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:.05em;color:#333;
+}
+
+/* ===================== CATALOG PAGE ===================== */
+.catalog-banner{
+  width:100%;height:300px;overflow:hidden;position:relative;background:#000;
+}
+.catalog-banner img{width:100%;height:100%;object-fit:cover;opacity:.65}
+.catalog-banner-text{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#fff;text-align:center;
+}
+.catalog-banner-text h1{font-size:clamp(30px,6vw,60px);font-weight:900;letter-spacing:-.03em}
+
+.catalog-layout{max-width:1400px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:240px 1fr;gap:44px}
+.filter-sidebar h3{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+.filter-group{margin-bottom:28px}
+.filter-group-title{
+  font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  padding-bottom:12px;border-bottom:1px solid #ddd;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+}
+.filter-option{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer}
+.filter-option input[type=checkbox]{width:14px;height:14px;cursor:pointer}
+.filter-option label{font-size:13px;cursor:pointer;flex:1}
+.filter-option span{font-size:12px;color:#888}
+.price-inputs{display:flex;gap:8px;align-items:center}
+.price-inputs input{width:80px;padding:8px;border:1px solid #ddd;font-size:12px}
+.price-inputs span{font-size:12px;color:#888}
+.catalog-main-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:8px;
+}
+.product-count{font-size:13px;color:#555}
+.sort-select{padding:9px 14px;border:1px solid #ddd;font-size:13px;background:#fff;cursor:pointer}
+.catalog-products{display:grid;grid-template-columns:repeat(4,1fr);gap:24px 16px}
+.filter-toggle-btn{
+  display:none;padding:11px 16px;border:1px solid #ddd;
+  font-size:13px;font-weight:600;background:#fff;width:100%;text-align:left;margin-bottom:16px;
+}
+
+/* ===================== PRODUCT DETAIL PAGE ===================== */
+.product-detail{max-width:1400px;margin:0 auto;padding:40px 20px}
+.breadcrumb{font-size:12px;color:#888;margin-bottom:28px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:#ccc}
+.product-layout{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.gallery-main{
+  aspect-ratio:1/1;overflow:hidden;background:#f5f5f5;margin-bottom:12px;cursor:zoom-in;position:relative;
+}
+.gallery-main img,.gallery-main video{width:100%;height:100%;object-fit:cover;transition:.3s;display:block}
+.gallery-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.gallery-thumb{
+  width:72px;height:72px;overflow:hidden;cursor:pointer;border:2px solid transparent;background:#f5f5f5;
+}
+.gallery-thumb.active{border-color:#000}
+.gallery-thumb img,.gallery-thumb video{width:100%;height:100%;object-fit:cover}
+.product-info h1{font-size:clamp(18px,2.5vw,30px);font-weight:900;line-height:1.15;letter-spacing:-.03em;margin-bottom:14px}
+.product-price{font-size:24px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
+.product-price del{color:#aaa;font-size:16px;font-weight:400;margin-right:8px}
+.mrp-tag{font-size:11px;color:#666;margin-bottom:20px;font-weight:500}
+.mrp-tag strong{color:#000}
+.product-badge{display:inline-block;background:#d10000;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;letter-spacing:.08em;margin-bottom:14px}
+.option-section{margin-bottom:20px}
+.option-section label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:10px}
+.size-grid{display:flex;gap:8px;flex-wrap:wrap}
+.size-btn{
+  padding:10px 14px;border:1px solid #ddd;font-size:12px;font-weight:600;
+  cursor:pointer;transition:.15s;min-width:52px;text-align:center;background:#fff;
+}
+.size-btn:hover{border-color:#000}
+.size-btn.active{background:#000;color:#fff;border-color:#000}
+.size-btn.disabled{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.qty-row label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;min-width:70px}
+.qty-ctrl{display:flex;align-items:center;border:1px solid #ddd}
+.qty-ctrl button{width:36px;height:36px;font-size:18px;background:#fff;transition:.15s}
+.qty-ctrl button:hover{background:#f0f0f0}
+.qty-ctrl input{width:48px;height:36px;text-align:center;border:none;border-left:1px solid #ddd;border-right:1px solid #ddd;font-size:14px;outline:none}
+.add-to-cart-btn{
+  width:100%;padding:18px;background:#000;color:#fff;font-size:13px;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:12px;transition:.2s;
+}
+.add-to-cart-btn:hover{background:#333}
+.add-to-cart-btn:disabled{background:#aaa;cursor:not-allowed}
+.buy-now-btn{
+  width:100%;padding:18px;background:#fff;color:#000;font-size:13px;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:2px solid #000;
+  margin-bottom:24px;transition:.2s;
+}
+.buy-now-btn:hover{background:#f0f0f0}
+.product-meta{font-size:13px;color:#555;line-height:1.75}
+.product-meta p{margin-bottom:8px}
+.product-meta strong{color:#000}
+.product-accordion{border-top:1px solid #ddd;margin-top:24px}
+.accordion-item{border-bottom:1px solid #ddd}
+.accordion-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.02em;
+}
+.accordion-header:hover{color:#555}
+.accordion-body{padding-bottom:16px;font-size:13px;color:#555;line-height:1.75;display:none}
+.accordion-body.open{display:block}
+.accordion-icon{font-size:18px;font-weight:300;transition:.3s}
+.accordion-item.open .accordion-icon{transform:rotate(45deg)}
+
+/* ===================== CART SIDEBAR ===================== */
+#cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;
+  opacity:0;pointer-events:none;transition:.3s;
+}
+#cart-overlay.open{opacity:1;pointer-events:all}
+#cart-panel{
+  position:fixed;top:0;right:-440px;width:min(440px,100vw);height:100vh;
+  background:#fff;z-index:401;display:flex;flex-direction:column;
+  box-shadow:-4px 0 24px rgba(0,0,0,.12);transition:.35s cubic-bezier(.4,0,.2,1);
+}
+#cart-panel.open{right:0}
+.cart-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;border-bottom:1px solid #eee;
+}
+.cart-header h3{font-size:15px;font-weight:800;letter-spacing:.02em}
+.cart-close{font-size:24px;font-weight:300;background:none;border:none;cursor:pointer;line-height:1}
+.cart-items{flex:1;overflow-y:auto;padding:0 24px}
+.cart-item{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid #f0f0f0}
+.cart-item img{width:80px;height:80px;object-fit:cover;background:#f5f5f5;flex-shrink:0}
+.cart-item-info{flex:1}
+.cart-item-title{font-size:12px;font-weight:600;line-height:1.35;margin-bottom:4px}
+.cart-item-variant{font-size:11px;color:#888;margin-bottom:8px}
+.cart-item-price{font-size:14px;font-weight:800}
+.cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:8px}
+.cart-item-qty button{width:24px;height:24px;border:1px solid #ddd;font-size:14px;background:#fff}
+.cart-item-qty span{font-size:13px;min-width:20px;text-align:center}
+.cart-item-remove{font-size:11px;text-decoration:underline;color:#888;cursor:pointer;background:none;border:none;margin-top:6px}
+.cart-empty{text-align:center;padding:60px 0;color:#888}
+.cart-empty p{margin-bottom:20px;font-size:14px}
+.cart-footer{padding:20px 24px;border-top:1px solid #eee}
+.cart-subtotal{display:flex;justify-content:space-between;font-size:15px;font-weight:800;margin-bottom:16px}
+.cart-checkout-btn{
+  width:100%;padding:16px;background:#000;color:#fff;font-size:13px;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;transition:.2s;
+}
+.cart-checkout-btn:hover{background:#333}
+.cart-continue{text-align:center;margin-top:12px;font-size:12px;text-decoration:underline;cursor:pointer;color:#555}
+
+/* ===================== TOAST ===================== */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:#000;color:#fff;padding:14px 30px;font-size:13px;font-weight:600;
+  z-index:999;border-radius:100px;transition:.35s;opacity:0;pointer-events:none;white-space:nowrap;
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ===================== PAGINATION ===================== */
+.pagination{display:flex;justify-content:center;align-items:center;gap:4px;padding:40px 0 0}
+.page-btn{
+  width:36px;height:36px;border:1px solid #ddd;font-size:13px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  background:#fff;transition:.15s;
+}
+.page-btn:hover,.page-btn.active{background:#000;color:#fff;border-color:#000}
+.page-btn.dots{border:none;cursor:default;background:none}
+.page-btn.dots:hover{background:none;color:inherit}
+
+/* ===================== SEARCH ===================== */
+#search-overlay{
+  position:fixed;inset:0;background:rgba(255,255,255,.98);backdrop-filter:blur(16px);z-index:500;
+  display:none;flex-direction:column;align-items:center;padding:90px 20px;
+}
+#search-overlay.open{display:flex}
+.search-inner{width:100%;max-width:660px}
+.search-input-row{display:flex;border-bottom:2px solid #000;margin-bottom:32px}
+.search-input-row input{
+  flex:1;padding:16px 0;font-size:24px;border:none;outline:none;background:transparent;
+  font-weight:300;
+}
+.search-close-btn{font-size:28px;font-weight:300;padding:8px;background:none;border:none;cursor:pointer}
+.search-result-item{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
+.search-result-item:hover{background:#fafafa}
+.search-result-img{width:60px;height:60px;object-fit:cover;background:#f0f0f0;flex-shrink:0}
+.search-result-info h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.search-result-info p{font-size:13px;color:#555;font-weight:600}
+
+/* ===================== ADMIN PANEL ===================== */
+#admin-panel{
+  display:none;position:fixed;inset:0;background:#f0f0f0;z-index:1000;
+  overflow-y:auto;
+}
+.admin-sidebar{
+  width:240px;background:#111;color:#fff;position:fixed;top:0;left:0;bottom:0;
+  display:flex;flex-direction:column;z-index:10;
+}
+.admin-sidebar-logo{
+  padding:20px;border-bottom:1px solid #222;
+  display:flex;align-items:center;gap:10px;
+}
+.admin-sidebar-logo img{width:32px;height:32px;border-radius:50%}
+.admin-sidebar-logo-text{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.admin-sidebar-logo-text span{font-size:10px;font-weight:400;display:block;color:#888;margin-top:2px;letter-spacing:.05em}
+.admin-nav{padding:12px 0;flex:1;overflow-y:auto}
+.admin-nav-item{
+  display:flex;align-items:center;gap:12px;padding:12px 20px;
+  font-size:13px;cursor:pointer;transition:.15s;color:#aaa;letter-spacing:.01em;
+}
+.admin-nav-item:hover,.admin-nav-item.active{background:#1a1a1a;color:#fff}
+.admin-nav-item .nav-icon{font-size:15px;width:20px;text-align:center}
+.admin-exit{padding:16px 20px;border-top:1px solid #222}
+.admin-exit button{width:100%;padding:10px;background:#d10000;color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;cursor:pointer;border:none;text-transform:uppercase}
+.admin-content{margin-left:240px;padding:32px;min-height:100vh}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.admin-topbar h1{font-size:22px;font-weight:900;letter-spacing:-.02em}
+.admin-btn{
+  padding:10px 20px;background:#000;color:#fff;font-size:11px;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;transition:.15s;
+}
+.admin-btn:hover{background:#333}
+.admin-btn.secondary{background:#fff;color:#000;border:1px solid #ddd}
+.admin-btn.secondary:hover{background:#f5f5f5}
+.admin-btn.danger{background:#d10000}
+.admin-btn.danger:hover{background:#a00}
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:#fff;padding:22px;border:1px solid #e5e5e5}
+.stat-card .label{font-size:10px;color:#888;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.stat-card .value{font-size:28px;font-weight:900;letter-spacing:-.02em}
+.stat-card .sub{font-size:12px;color:#888;margin-top:4px}
+.admin-card{background:#fff;border:1px solid #e5e5e5;margin-bottom:24px}
+.admin-card-header{
+  padding:16px 20px;border-bottom:1px solid #eee;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.admin-card-header h3{font-size:13px;font-weight:800;letter-spacing:.03em}
+.admin-card-body{padding:20px}
+.admin-table{width:100%;border-collapse:collapse}
+.admin-table th{
+  text-align:left;padding:10px 12px;font-size:10px;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;color:#888;border-bottom:1px solid #eee;
+}
+.admin-table td{padding:12px;font-size:13px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+.admin-table tr:hover td{background:#fafafa}
+.admin-table img{width:44px;height:44px;object-fit:cover;background:#f0f0f0}
+.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.form-group input,.form-group select,.form-group textarea{
+  padding:10px 12px;border:1px solid #ddd;font-size:13px;outline:none;
+  transition:.15s;background:#fff;font-family:inherit;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#000}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-group .hint{font-size:11px;color:#888;line-height:1.4}
+.admin-section{display:none}
+.admin-section.active{display:block}
+.supabase-notice{
+  background:#0d1a0d;color:#4ade80;border:1px solid #2d6a2d;
+  padding:16px 20px;font-size:12px;font-family:monospace;margin-bottom:20px;
+  border-radius:4px;line-height:1.7;
+}
+.supabase-notice strong{color:#86efac}
+.badge{
+  display:inline-block;padding:2px 8px;font-size:10px;font-weight:800;border-radius:2px;letter-spacing:.04em;
+}
+.badge.green{background:#e6f9ef;color:#00843d}
+.badge.red{background:#fde8e8;color:#c00}
+.badge.yellow{background:#fef8e6;color:#7a5a00}
+.badge.gray{background:#f0f0f0;color:#555}
+
+/* Image Upload in forms */
+.img-upload-area{
+  border:2px dashed #ddd;padding:20px;text-align:center;
+  cursor:pointer;transition:.2s;background:#fafafa;position:relative;
+}
+.img-upload-area:hover{border-color:#000;background:#f5f5f5}
+.img-upload-area input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.img-upload-area p{font-size:12px;color:#888;margin-top:6px}
+.img-upload-area strong{font-size:13px;color:#333}
+.img-preview{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;
+}
+.img-preview img{width:64px;height:64px;object-fit:cover;border:1px solid #eee}
+.img-or{
+  display:flex;align-items:center;gap:12px;color:#aaa;font-size:11px;margin:12px 0;
+}
+.img-or::before,.img-or::after{content:'';flex:1;height:1px;background:#eee}
+
+/* ===================== MODAL ===================== */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;
+  align-items:flex-start;justify-content:center;padding-top:40px;overflow-y:auto;
+}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;width:min(700px,96vw);margin-bottom:40px;padding:36px}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.modal-header h2{font-size:18px;font-weight:900;letter-spacing:-.01em}
+.modal-close{font-size:28px;background:none;border:none;cursor:pointer;line-height:1;color:#888}
+
+/* ===================== LOADING ===================== */
+.loading-spinner{
+  display:flex;align-items:center;justify-content:center;
+  padding:60px;font-size:13px;color:#888;
+}
+.loading-spinner::before{
+  content:'';width:22px;height:22px;border:2px solid #eee;
+  border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;margin-right:12px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===================== PRODUCT URL SHARING ===================== */
+.share-btn{
+  display:flex;align-items:center;gap:6px;background:none;border:1px solid #ddd;
+  padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;
+  letter-spacing:.04em;color:#333;
+}
+.share-btn:hover{background:#f5f5f5;border-color:#999}
+.share-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:1100px){
+  .products-grid,.catalog-products{grid-template-columns:repeat(3,1fr)}
+  .collections-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:repeat(2,1fr)}
+  .admin-stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:900px){
+  #adventure-section .adv-content{grid-template-columns:1fr;gap:40px}
+  .adv-image-wrap{max-width:400px;margin:0 auto}
+  .promo-split{grid-template-columns:1fr}
+  .promo-right{padding:36px 28px}
+  .promo-left{aspect-ratio:16/9}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .products-grid,.catalog-products{grid-template-columns:repeat(2,1fr)}
+  .stories-grid{grid-template-columns:1fr 1fr}
+  .product-layout{grid-template-columns:1fr;gap:32px}
+  .catalog-layout{grid-template-columns:1fr}
+  .filter-sidebar{display:none}
+  .filter-sidebar.mobile-open{display:block;margin-bottom:24px}
+  .filter-toggle-btn{display:block}
+  .admin-sidebar{display:none}
+  .admin-content{margin-left:0;padding:16px}
+  .admin-stats{grid-template-columns:1fr 1fr}
+  .admin-form-grid{grid-template-columns:1fr}
+  .banner-full-overlay{padding:0 28px}
+  .hero-arrow{display:none}
+}
+@media(max-width:480px){
+  .products-grid,.catalog-products{grid-template-columns:repeat(2,1fr);gap:12px 8px}
+  .collections-grid{grid-template-columns:1fr 1fr}
+  .stories-grid{grid-template-columns:1fr}
+  #hero{height:70vw;min-height:300px;max-height:520px}
+  .catalog-banner{height:180px}
+  .hero-overlay h2{font-size:22px}
+  .hero-overlay p{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ====== ANNOUNCE BAR ====== -->
+<div id="announce-bar">
+  <span id="announce-text">🚚 Price includes shipping — Worldwide Delivery Available!</span>
+</div>
+
+<!-- ====== HEADER ====== -->
+<header id="site-header">
+  <div class="header-inner">
+    <nav class="nav-links" id="desktop-nav">
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('catalog')">Catalog</a>
+      <a href="#" onclick="showPage('contact')">Contact</a>
+      <a href="#" onclick="showPage('stories')">About Us</a>
+    </nav>
+    <a class="site-logo" href="#" onclick="showPage('home')">
+      <img src="https://framerusercontent.com/images/GcFu6wYPhW1waroIjPNGnmOlYk.png?width=500&height=500" alt="Astra Logo">
+      <div class="logo-text">Astra<span class="sub">Custom Sneakers</span></div>
+    </a>
+    <div class="header-icons">
+      <button onclick="toggleSearch()" aria-label="Search">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <a href="#" onclick="toggleCart()" aria-label="Cart" style="display:flex;align-items:center;gap:6px">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+      <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ====== MOBILE NAV ====== -->
+<div id="mobile-nav">
+  <div class="nav-logo">
+    <img src="https://framerusercontent.com/images/GcFu6wYPhW1waroIjPNGnmOlYk.png?width=500&height=500" alt="Astra">
+    Astra
+  </div>
+  <a href="#" onclick="showPage('home');toggleMobileNav()">Home</a>
+  <a href="#" onclick="showPage('catalog');toggleMobileNav()">Catalog</a>
+  <a href="#" onclick="showPage('contact');toggleMobileNav()">Contact</a>
+  <a href="#" onclick="showPage('stories');toggleMobileNav()">About Us</a>
+  <a href="#" onclick="toggleCart();toggleMobileNav()">Cart (<span id="m-cart-count">0</span>)</a>
+</div>
+
+<!-- ====== PAGES ====== -->
+
+<!-- === HOME PAGE === -->
+<div id="page-home" class="page active">
+
+  <!-- Hero Slideshow -->
+  <section id="hero">
+    <div class="hero-slides" id="heroSlides"></div>
+    <button class="hero-arrow hero-prev" onclick="moveHero(-1)" aria-label="Previous">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
+    </button>
+    <button class="hero-arrow hero-next" onclick="moveHero(1)" aria-label="Next">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9,6 15,12 9,18"/></svg>
+    </button>
+    <div class="hero-controls">
+      <div class="hero-dots" id="heroDots"></div>
+    </div>
+    <!-- Video controls shown only on active video slide -->
+    <div class="hero-video-controls" id="heroVidControls" style="display:none">
+      <button class="hero-vc-btn" id="heroPlayBtn" onclick="toggleHeroVideo()" aria-label="Play/Pause">
+        <svg id="heroPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="hero-vc-btn" id="heroMuteBtn" onclick="toggleHeroMute()" aria-label="Mute/Unmute">
+        <svg id="heroMuteIcon" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Collections -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title" id="collections-section-title">Shop by Collections</h2>
+        <p class="section-sub">Explore our hand-painted universes</p>
+      </div>
+      <a href="#" class="view-all" onclick="showPage('catalog')">View all</a>
+    </div>
+    <div class="collections-grid" id="collectionsGrid"></div>
+  </div>
+
+  <!-- Snoopy Promo -->
+  <div class="promo-split" style="max-width:1400px;margin:0 auto 64px;">
+    <div class="promo-left">
+      <img src="https://sneakcares.site/cdn/shop/files/Lu_ada_fotografer_yang_sudah_202605071840.jpg?v=1778154183&width=700" alt="Snoopy Space" loading="lazy">
+    </div>
+    <div class="promo-right">
+      <div class="eyebrow">New Collection</div>
+      <h2>Time to space<br>with Snoopy!</h2>
+      <p>Custom hand-painted sneakers featuring everyone's beloved beagle adventuring through the cosmos. Each pair is a unique wearable piece of art.</p>
+      <a href="#" class="btn-dark" onclick="openProductById('snoopy-air-force')">Shop Now</a>
+    </div>
+  </div>
+
+  <!-- Featured Products -->
+  <div class="section" style="padding-top:0">
+    <div class="section-header">
+      <h2 class="section-title">New Drop from Westeros!</h2>
+      <a href="#" class="view-all" onclick="showPage('catalog')">View all</a>
+    </div>
+    <div class="products-grid" id="featuredProducts"></div>
+  </div>
+
+  <!-- Step into your Adventure – Perfect UI Section -->
+  <section id="adventure-section">
+    <div class="adv-bg"></div>
+    <div class="adv-content">
+      <div class="adv-text">
+        <span class="adv-eyebrow">Adventure Time Collection</span>
+        <h2>Step into your <em>Adventure!</em></h2>
+        <p>Mathematical! Custom hand-painted sneakers for true adventure fans. Each pair captures the wild, colorful spirit of the Land of Ooo — directly on your feet.</p>
+        <a href="#" class="btn-primary" onclick="showPage('catalog')" style="align-self:flex-start">Shop Adventure Time</a>
+      </div>
+      <div class="adv-image-wrap">
+        <img src="https://sneakcares.site/cdn/shop/files/WEB_ADV.jpg?v=1777450670&width=700" alt="Adventure Time Sneakers" loading="lazy">
+        <div class="adv-badge">
+          <span>Hand</span>
+          <span>Painted</span>
+          <span>✦</span>
+          <span>Art</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Moana Banner -->
+  <div class="banner-full">
+    <img src="https://sneakcares.site/cdn/shop/files/Moana_Shoot.jpg?v=1777986278&width=1400" alt="Moana Custom Sneakers" loading="lazy">
+    <div class="banner-full-overlay">
+      <div class="eyebrow">New Arrival</div>
+      <h2>Step into your<br>Adventure!</h2>
+      <a href="#" class="btn-primary" onclick="openProductById('moana-air-force')">Shop Now!</a>
+    </div>
+  </div>
+
+  <!-- Mordor Section – perfect dark UI -->
+  <section id="mordor-section">
+    <div class="promo-split" style="max-width:1400px;margin:0 auto">
+      <div class="promo-right" style="background:#080808;color:#fff;order:1">
+        <div class="eyebrow" style="color:#555">New Collection</div>
+        <h2 style="color:#fff;font-size:clamp(24px,3.5vw,44px)">Coming from<br>Mordor!</h2>
+        <p style="color:#777">One Shoe to rule them all. Custom painted sneakers inspired by the legendary world of Tolkien. Forged in the fires of pure artistry.</p>
+        <a href="#" class="btn-primary" onclick="openProductById('lotr')">Shop Now</a>
+      </div>
+      <div class="promo-left" style="order:2">
+        <img src="https://sneakcares.site/cdn/shop/files/Lord_Of_TheRings.jpg?v=1776618732&width=700" alt="Lord of the Rings Custom Sneakers" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- Stories -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">Their Stories!</h2>
+    </div>
+    <div class="stories-grid" id="storiesGrid"></div>
+  </div>
+
+  <!-- Newsletter -->
+  <section id="newsletter">
+    <h2 id="newsletter-title">Subscribe to our emails</h2>
+    <p id="newsletter-desc">Be the first to know about new collections and exclusive offers.</p>
+    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+      <input type="email" placeholder="Your email address" required id="newsletter-email">
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer id="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <img src="https://framerusercontent.com/images/GcFu6wYPhW1waroIjPNGnmOlYk.png?width=500&height=500" alt="Astra" style="width:28px;height:28px;border-radius:50%">
+          <h4 style="margin:0">Astra Custom</h4>
+        </div>
+        <p id="footer-about">Custom hand-painted sneakers made with passion and craftsmanship. Each pair tells a unique story.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="#" onclick="showPage('home')">Home</a>
+        <a href="#" onclick="showPage('catalog')">Catalog</a>
+        <a href="#" onclick="showPage('contact')">Contact</a>
+        <a href="#" onclick="showPage('stories')">About Us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Customer Service</h4>
+        <a href="#">FAQ</a>
+        <a href="#">Shipping Policy</a>
+        <a href="#">Return Policy</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p id="footer-email">Email: hello@astracustom.site</p>
+        <p id="footer-instagram">Instagram: @astracustom</p>
+        <p id="footer-country">India | INR ₹</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="footer-copyright">© 2026, Astra Custom Sneakers</span>
+      <div class="payment-icons">
+        <span class="payment-icon">VISA</span>
+        <span class="payment-icon">MC</span>
+        <span class="payment-icon">UPI</span>
+        <span class="payment-icon">Razorpay</span>
+        <span class="payment-icon">PayTM</span>
+        <span class="payment-icon">NetBanking</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- === CATALOG PAGE === -->
+<div id="page-catalog" class="page">
+  <div class="catalog-banner">
+    <img src="https://sneakcares.site/cdn/shop/files/Web_PNG.png?v=1776988033&width=1400" alt="Catalog" loading="lazy">
+    <div class="catalog-banner-text">
+      <h1>All Products</h1>
+    </div>
+  </div>
+  <div class="catalog-layout">
+    <aside class="filter-sidebar" id="filterSidebar">
+      <h3>Filter</h3>
+      <div class="filter-group">
+        <div class="filter-group-title" onclick="toggleFilter('avail')">
+          Availability <span id="avail-icon">+</span>
+        </div>
+        <div id="filter-avail">
+          <label class="filter-option"><input type="checkbox" onchange="filterProducts()"> <span>In stock</span></label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-title" onclick="toggleFilter('price')">
+          Price <span id="price-icon">+</span>
+        </div>
+        <div id="filter-price">
+          <p style="font-size:12px;color:#888;margin-bottom:10px">Price in MRP (₹)</p>
+          <div class="price-inputs">
+            <span>₹</span>
+            <input type="number" placeholder="From" id="priceMin" onchange="filterProducts()">
+            <span>–</span>
+            <input type="number" placeholder="To" id="priceMax" onchange="filterProducts()">
+          </div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-title" onclick="toggleFilter('cat')">
+          Collections <span id="cat-icon">+</span>
+        </div>
+        <div id="filter-cat" id="collectionFilterList">
+          <!-- Dynamically populated from DB.collections -->
+        </div>
+      </div>
+    </aside>
+    <div>
+      <button class="filter-toggle-btn" onclick="toggleMobileFilter()">⚙ Filter & Sort</button>
+      <div class="catalog-main-header">
+        <span class="product-count" id="catalogCount">Loading products...</span>
+        <select class="sort-select" onchange="sortProducts(this.value)" id="catalogSort">
+          <option value="featured">Featured</option>
+          <option value="az">Alphabetically, A–Z</option>
+          <option value="za">Alphabetically, Z–A</option>
+          <option value="low">Price, low to high</option>
+          <option value="high">Price, high to low</option>
+          <option value="new">Date, new to old</option>
+        </select>
+      </div>
+      <div class="catalog-products" id="catalogProducts">
+        <div class="loading-spinner" style="grid-column:1/-1"></div>
+      </div>
+      <div class="pagination" id="catalogPagination"></div>
+    </div>
+  </div>
+  <footer style="border-top:1px solid #eee;margin-top:40px;padding:20px;text-align:center;font-size:12px;color:#888">
+    © 2026, Astra Custom Sneakers
+  </footer>
+</div>
+
+<!-- === PRODUCT DETAIL PAGE (shareable URL: /collection/product-slug) === -->
+<div id="page-product" class="page">
+  <div class="product-detail" id="productDetailContent"></div>
+  <footer style="border-top:1px solid #eee;padding:20px;text-align:center;font-size:12px;color:#888">
+    © 2026, Astra Custom Sneakers
+  </footer>
+</div>
+
+<!-- === CONTACT PAGE === -->
+<div id="page-contact" class="page">
+  <div style="max-width:660px;margin:0 auto;padding:64px 20px">
+    <h1 style="font-size:34px;font-weight:900;margin-bottom:8px;letter-spacing:-.03em">Contact Us</h1>
+    <p style="color:#555;margin-bottom:44px;font-size:14px">Have a custom design in mind? We'd love to hear from you!</p>
+    <form onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:18px">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" placeholder="Your name" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label>Phone / WhatsApp</label>
+        <input type="tel" placeholder="+91...">
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea rows="5" placeholder="Tell us about your custom sneaker idea..." required></textarea>
+      </div>
+      <button type="submit" class="btn-dark" style="align-self:flex-start;padding:15px 40px">Send Message</button>
+    </form>
+  </div>
+</div>
+
+<!-- === STORIES PAGE === -->
+<div id="page-stories" class="page">
+  <div style="max-width:920px;margin:0 auto;padding:64px 20px">
+    <h1 style="font-size:34px;font-weight:900;margin-bottom:8px;letter-spacing:-.03em">Customer Stories</h1>
+    <p style="color:#888;margin-bottom:40px;font-size:14px">Real people. Real pairs. Unforgettable moments.</p>
+    <div id="storiesPageGrid" style="display:flex;flex-direction:column;gap:44px"></div>
+  </div>
+</div>
+
+<!-- ====== CART SIDEBAR ====== -->
+<div id="cart-overlay" onclick="toggleCart()"></div>
+<div id="cart-panel">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="toggleCart()">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <span id="cartSubtotal">₹0</span>
+    </div>
+    <p style="font-size:11px;color:#888;margin-bottom:12px;line-height:1.5">MRP inclusive of all taxes. Shipping included.</p>
+    <button class="cart-checkout-btn" onclick="showToast('Checkout coming soon!')">Proceed to Checkout</button>
+    <p class="cart-continue" onclick="toggleCart()">Continue shopping</p>
+  </div>
+</div>
+
+<!-- ====== SEARCH ====== -->
+<div id="search-overlay">
+  <div class="search-inner">
+    <div class="search-input-row">
+      <input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)">
+      <button class="search-close-btn" onclick="toggleSearch()">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ====== TOAST ====== -->
+<div id="toast"></div>
+
+<!-- ====== ADMIN PANEL ====== -->
+<div id="admin-panel">
+  <div class="admin-sidebar">
+    <div class="admin-sidebar-logo">
+      <img src="https://framerusercontent.com/images/GcFu6wYPhW1waroIjPNGnmOlYk.png?width=500&height=500" alt="Astra">
+      <div class="admin-sidebar-logo-text">Astra<span>Admin CMS Panel</span></div>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-item active" onclick="showAdminSection('dashboard',this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="admin-nav-item" onclick="showAdminSection('products',this)">
+        <span class="nav-icon">👟</span> Products
+      </div>
+      <div class="admin-nav-item" onclick="showAdminSection('collections',this)">
+        <span class="nav-icon">📁</span> Collections
+      </div>
+      <div class="admin-nav-item" onclick="showAdminSection('stories',this)">
+        <span class="nav-icon">📖</span> Stories / Blog
+      </div>
+      <div class="admin-nav-item" onclick="showAdminSection('hero',this)">
+        <span class="nav-icon">🖼</span> Hero Slides
+      </div>
+      <div class="admin-nav-item" onclick="showAdminSection('settings',this)">
+        <span class="nav-icon">⚙️</span> Site Settings
+      </div>
+      <div class="admin-nav-item" onclick="showAdminSection('subscribers',this)">
+        <span class="nav-icon">📧</span> Subscribers
+      </div>
+    </nav>
+    <div class="admin-exit">
+      <button onclick="closeAdmin()">← Exit Admin</button>
+    </div>
+  </div>
+  <div class="admin-content">
+
+    <!-- Dashboard -->
+    <div class="admin-section active" id="admin-dashboard">
+      <div class="admin-topbar">
+        <h1>Dashboard</h1>
+        <span style="font-size:13px;color:#888">Welcome back, Admin</span>
+      </div>
+      <div class="supabase-notice">
+        🔌 <strong>Supabase Connected</strong> — URL: <code>https://bfgynclddehatuwfxehr.supabase.co</code><br>
+        Key: <code id="sb-display-key">sb_publishable_w0MOh_ROJPEEdHTy4KSFxw_jv5H2Ex9</code><br>
+        Tables: <code>products · collections · stories · hero · site_settings · subscribers</code>
+      </div>
+      <div class="admin-stats">
+        <div class="stat-card"><div class="label">Total Products</div><div class="value" id="stat-products">0</div><div class="sub">In catalog</div></div>
+        <div class="stat-card"><div class="label">Collections</div><div class="value" id="stat-collections">0</div><div class="sub">Active</div></div>
+        <div class="stat-card"><div class="label">Stories</div><div class="value" id="stat-stories">0</div><div class="sub">Published</div></div>
+        <div class="stat-card"><div class="label">Subscribers</div><div class="value" id="stat-subscribers">0</div><div class="sub">Email list</div></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header"><h3>Recent Products</h3><button class="admin-btn" onclick="showAdminSection('products',null);openProductModal()">+ Add Product</button></div>
+        <div class="admin-card-body" style="overflow-x:auto">
+          <table class="admin-table" id="dashRecentProducts">
+            <thead><tr><th>Image</th><th>Title</th><th>MRP</th><th>Collection</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="dashProductRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="admin-section" id="admin-products">
+      <div class="admin-topbar">
+        <h1>Products</h1>
+        <button class="admin-btn" onclick="openProductModal()">+ Add Product</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3 id="admin-product-count">All Products</h3>
+          <input type="text" placeholder="Search products..." style="padding:8px 12px;border:1px solid #ddd;font-size:13px;width:220px" oninput="filterAdminProducts(this.value)">
+        </div>
+        <div class="admin-card-body" style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Image</th><th>Title</th><th>MRP</th><th>Collection</th><th>Sizes</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="adminProductRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collections -->
+    <div class="admin-section" id="admin-collections">
+      <div class="admin-topbar">
+        <h1>Collections</h1>
+        <button class="admin-btn" onclick="openCollectionModal()">+ Add Collection</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-body" style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Image</th><th>Name</th><th>Slug</th><th>Products</th><th>Actions</th></tr></thead>
+            <tbody id="adminCollectionRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stories -->
+    <div class="admin-section" id="admin-stories">
+      <div class="admin-topbar">
+        <h1>Stories / Blog</h1>
+        <button class="admin-btn" onclick="openStoryModal()">+ Add Story</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-body" style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Image</th><th>Title</th><th>Date</th><th>Excerpt</th><th>Actions</th></tr></thead>
+            <tbody id="adminStoryRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Slides -->
+    <div class="admin-section" id="admin-hero">
+      <div class="admin-topbar">
+        <h1>Hero Slides</h1>
+        <button class="admin-btn" onclick="openHeroModal()">+ Add Slide</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-body" style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Preview</th><th>Type</th><th>Title</th><th>Description</th><th>Order</th><th>Actions</th></tr></thead>
+            <tbody id="adminHeroRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="admin-section" id="admin-settings">
+      <div class="admin-topbar"><h1>Site Settings</h1></div>
+      <div class="admin-card" style="margin-bottom:24px">
+        <div class="admin-card-header"><h3>🔌 Supabase Configuration</h3></div>
+        <div class="admin-card-body">
+          <div class="admin-form-grid">
+            <div class="form-group full">
+              <label>Supabase Project URL</label>
+              <input type="url" id="sb-url" value="https://bfgynclddehatuwfxehr.supabase.co">
+              <span class="hint">Your Supabase project URL</span>
+            </div>
+            <div class="form-group full">
+              <label>Supabase Publishable Key</label>
+              <input type="text" id="sb-key" value="sb_publishable_w0MOh_ROJPEEdHTy4KSFxw_jv5H2Ex9">
+              <span class="hint">Admin/publishable key from Supabase dashboard</span>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+            <button class="admin-btn" onclick="saveSupabaseConfig()">Save & Connect</button>
+            <button class="admin-btn secondary" onclick="testSupabaseConnection()">Test Connection</button>
+          </div>
+          <div id="sb-status" style="margin-top:12px;font-size:13px"></div>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header"><h3>General Settings</h3><button class="admin-btn" onclick="saveSettings()">Save Changes</button></div>
+        <div class="admin-card-body">
+          <div class="admin-form-grid">
+            <div class="form-group"><label>Site Name</label><input type="text" id="s-sitename" value="Astra Custom Sneakers"></div>
+            <div class="form-group"><label>Contact Email</label><input type="email" id="s-email" value="hello@astracustom.site"></div>
+            <div class="form-group"><label>Instagram Handle</label><input type="text" id="s-instagram" value="@astracustom"></div>
+            <div class="form-group"><label>WhatsApp Number</label><input type="text" id="s-whatsapp" placeholder="+91..."></div>
+            <div class="form-group full"><label>Announcement Bar Text</label><input type="text" id="s-announce" value="🚚 Price includes shipping — Worldwide Delivery Available!"></div>
+            <div class="form-group full"><label>Footer About Text</label><textarea id="s-footer-about">Custom hand-painted sneakers made with passion and craftsmanship. Each pair tells a unique story.</textarea></div>
+            <div class="form-group full"><label>Newsletter Heading</label><input type="text" id="s-newsletter-title" value="Subscribe to our emails"></div>
+            <div class="form-group full"><label>Newsletter Description</label><input type="text" id="s-newsletter-desc" value="Be the first to know about new collections and exclusive offers."></div>
+            <div class="form-group full"><label>Footer Copyright</label><input type="text" id="s-copyright" value="© 2026, Astra Custom Sneakers"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscribers -->
+    <div class="admin-section" id="admin-subscribers">
+      <div class="admin-topbar">
+        <h1>Email Subscribers</h1>
+        <button class="admin-btn" onclick="exportSubscribers()">Export CSV</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-body">
+          <table class="admin-table">
+            <thead><tr><th>Email</th><th>Subscribed On</th><th>Actions</th></tr></thead>
+            <tbody id="adminSubscriberRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ====== MODALS ====== -->
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="productModalTitle">Add Product</h2>
+      <button class="modal-close" onclick="closeProductModal()">×</button>
+    </div>
+    <div class="admin-form-grid">
+      <input type="hidden" id="pm-id">
+      <div class="form-group full"><label>Product Title</label><input type="text" id="pm-title" placeholder="CUSTOM PAINT SNEAKERS..."></div>
+      <div class="form-group"><label>MRP Price (₹ INR)</label><input type="number" id="pm-price" placeholder="5300000"></div>
+      <div class="form-group"><label>Compare-at MRP</label><input type="number" id="pm-compare" placeholder="Leave blank if no sale"></div>
+      <div class="form-group"><label>Collection</label>
+        <select id="pm-collection">
+          <option value="">Select collection</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select id="pm-status">
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+      <!-- Image upload: URL or file -->
+      <div class="form-group full">
+        <label>Main Image</label>
+        <input type="url" id="pm-image" placeholder="https://... (paste image URL)">
+        <div class="img-or">or upload locally</div>
+        <div class="img-upload-area" id="pm-image-upload-area">
+          <input type="file" accept="image/*,video/*" onchange="handleImageUpload(this,'pm-image','pm-img-preview')">
+          <strong>📎 Click to upload image or video</strong>
+          <p>PNG, JPG, WEBP, MP4 — max 20MB</p>
+        </div>
+        <div class="img-preview" id="pm-img-preview"></div>
+      </div>
+      <div class="form-group full">
+        <label>Additional Images (comma-separated URLs)</label>
+        <input type="text" id="pm-images" placeholder="https://..., https://...">
+        <div class="img-or">or upload additional</div>
+        <div class="img-upload-area">
+          <input type="file" accept="image/*,video/*" multiple onchange="handleMultiImageUpload(this,'pm-images','pm-imgs-preview')">
+          <strong>📎 Upload multiple images/videos</strong>
+          <p>Adds to gallery thumbnails</p>
+        </div>
+        <div class="img-preview" id="pm-imgs-preview"></div>
+      </div>
+      <div class="form-group full"><label>Product Video URL (optional)</label><input type="url" id="pm-video" placeholder="https://... (MP4 video URL for product page)"></div>
+      <div class="form-group full"><label>Available Sizes (comma-separated)</label><input type="text" id="pm-sizes" value="36, 37, 38, 39, 40, 41, 42, 43, 44, 45"></div>
+      <div class="form-group full"><label>Description</label><textarea id="pm-desc" rows="4" placeholder="Product description..."></textarea></div>
+      <div class="form-group full"><label>Slug (URL handle — auto-generated if blank)</label><input type="text" id="pm-slug" placeholder="custom-paint-sneakers-..."></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+      <button class="admin-btn" onclick="saveProduct()">Save Product</button>
+      <button class="admin-btn secondary" onclick="closeProductModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Collection Modal -->
+<div class="modal-overlay" id="collectionModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="collectionModalTitle">Add Collection</h2>
+      <button class="modal-close" onclick="closeModal('collectionModal')">×</button>
+    </div>
+    <div class="admin-form-grid">
+      <input type="hidden" id="cm-id">
+      <div class="form-group full"><label>Collection Name</label><input type="text" id="cm-name" placeholder="Toy Story"></div>
+      <div class="form-group full"><label>Slug</label><input type="text" id="cm-slug" placeholder="toy-story"></div>
+      <div class="form-group full">
+        <label>Cover Image URL</label>
+        <input type="url" id="cm-image" placeholder="https://...">
+        <div class="img-or">or upload locally</div>
+        <div class="img-upload-area">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this,'cm-image','cm-img-preview')">
+          <strong>📎 Click to upload cover image</strong>
+          <p>PNG, JPG, WEBP — max 10MB</p>
+        </div>
+        <div class="img-preview" id="cm-img-preview"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:24px">
+      <button class="admin-btn" onclick="saveCollection()">Save Collection</button>
+      <button class="admin-btn secondary" onclick="closeModal('collectionModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Story Modal -->
+<div class="modal-overlay" id="storyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="storyModalTitle">Add Story</h2>
+      <button class="modal-close" onclick="closeModal('storyModal')">×</button>
+    </div>
+    <div class="admin-form-grid">
+      <input type="hidden" id="sm-id">
+      <div class="form-group full"><label>Title</label><input type="text" id="sm-title" placeholder="Story title..."></div>
+      <div class="form-group"><label>Date</label><input type="date" id="sm-date"></div>
+      <div class="form-group">
+        <label>Image URL</label>
+        <input type="url" id="sm-image" placeholder="https://...">
+        <div class="img-upload-area" style="margin-top:8px">
+          <input type="file" accept="image/*" onchange="handleImageUpload(this,'sm-image','sm-img-preview')">
+          <strong>📎 Or upload image</strong>
+        </div>
+        <div class="img-preview" id="sm-img-preview"></div>
+      </div>
+      <div class="form-group full"><label>Excerpt</label><textarea id="sm-excerpt" rows="3" placeholder="Short story excerpt..."></textarea></div>
+      <div class="form-group full"><label>Full Content</label><textarea id="sm-content" rows="6" placeholder="Full story content..."></textarea></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:24px">
+      <button class="admin-btn" onclick="saveStory()">Save Story</button>
+      <button class="admin-btn secondary" onclick="closeModal('storyModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Modal – supports image and video upload -->
+<div class="modal-overlay" id="heroModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="heroModalTitle">Add Hero Slide</h2>
+      <button class="modal-close" onclick="closeModal('heroModal')">×</button>
+    </div>
+    <div class="admin-form-grid">
+      <input type="hidden" id="hm-id">
+      <div class="form-group full">
+        <label>Media (Image or Video URL)</label>
+        <input type="url" id="hm-image" placeholder="https://... (image or video URL)">
+        <div class="img-or">or upload locally</div>
+        <div class="img-upload-area">
+          <input type="file" accept="image/*,video/*" onchange="handleImageUpload(this,'hm-image','hm-img-preview')">
+          <strong>📎 Click to upload image or video</strong>
+          <p>PNG, JPG, WEBP, MP4, WEBM — auto-detected as image or video</p>
+        </div>
+        <div class="img-preview" id="hm-img-preview"></div>
+      </div>
+      <div class="form-group"><label>Media Type</label>
+        <select id="hm-type">
+          <option value="image">Image</option>
+          <option value="video">Video (auto-play, muted)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Sort Order</label><input type="number" id="hm-order" value="0"></div>
+      <div class="form-group full"><label>Title</label><input type="text" id="hm-title" placeholder="Hero headline..."></div>
+      <div class="form-group full"><label>Description</label><input type="text" id="hm-desc" placeholder="Subtitle text..."></div>
+      <div class="form-group full"><label>Button Text</label><input type="text" id="hm-btn" value="Shop Now!"></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:24px">
+      <button class="admin-btn" onclick="saveHeroSlide()">Save Slide</button>
+      <button class="admin-btn secondary" onclick="closeModal('heroModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+// SUPABASE INIT – pre-filled with provided keys
+// ===================================================================
+const { createClient } = supabase;
+let sb = null;
+
+const DEFAULT_SB_URL = 'https://bfgynclddehatuwfxehr.supabase.co';
+const DEFAULT_SB_KEY = 'sb_publishable_w0MOh_ROJPEEdHTy4KSFxw_jv5H2Ex9';
+
+function initSupabase(url, key) {
+  if (!url || !key) return false;
+  try {
+    sb = createClient(url, key);
+    localStorage.setItem('sb_url', url);
+    localStorage.setItem('sb_key', key);
+    return true;
+  } catch(e) { console.warn('Supabase init error', e); return false; }
+}
+
+// Auto-init with default keys
+(function() {
+  const url = localStorage.getItem('sb_url') || DEFAULT_SB_URL;
+  const key = localStorage.getItem('sb_key') || DEFAULT_SB_KEY;
+  initSupabase(url, key);
+  const sbUrlEl = document.getElementById('sb-url');
+  const sbKeyEl = document.getElementById('sb-key');
+  if (sbUrlEl) sbUrlEl.value = url;
+  if (sbKeyEl) sbKeyEl.value = key;
+})();
+
+async function saveSupabaseConfig() {
+  const url = document.getElementById('sb-url').value.trim();
+  const key = document.getElementById('sb-key').value.trim();
+  if (!url || !key) { showToast('Please enter URL and key'); return; }
+  const ok = initSupabase(url, key);
+  if (ok) { showToast('Supabase configured!'); await testSupabaseConnection(); }
+  else { document.getElementById('sb-status').innerHTML = '<span style="color:red">❌ Invalid configuration</span>'; }
+}
+
+async function testSupabaseConnection() {
+  if (!sb) { document.getElementById('sb-status').innerHTML = '<span style="color:red">❌ Not configured</span>'; return; }
+  try {
+    const { error } = await sb.from('products').select('id').limit(1);
+    if (error && error.code !== 'PGRST116') {
+      document.getElementById('sb-status').innerHTML = `<span style="color:orange">⚠ Connected: ${error.message}</span>`;
+    } else {
+      document.getElementById('sb-status').innerHTML = '<span style="color:green">✅ Connected successfully!</span>';
+      showToast('Supabase connected!');
+      loadAllData();
+    }
+  } catch(e) {
+    document.getElementById('sb-status').innerHTML = `<span style="color:red">❌ ${e.message}</span>`;
+  }
+}
+
+// ===================================================================
+// LOCAL DATA (fallback)
+// ===================================================================
+let DB = {
+  products: [
+    { id:'p1', title:'CUSTOM PAINT SNEAKERS SNOOPY WITH AIR FORCE UNOFFICIAL', slug:'snoopy-air-force', price:5400000, compare:null, collection:'new-drop', image:'https://sneakcares.site/cdn/shop/files/SnoopySnoopy.jpg?v=1777630113&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Custom hand-painted sneakers featuring Snoopy in space. Each pair is uniquely hand-painted by our artists using high-quality acrylic paint and sealed for durability.' },
+    { id:'p2', title:'CUSTOM SNEAKERS GAME OF THRONE HOUSE OF STARK', slug:'got-stark', price:5300000, compare:null, collection:'game-of-thrones', image:'https://sneakcares.site/cdn/shop/files/Game_Of_ThronesStark.jpg?v=1776148022&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Winter is Coming — House Stark themed custom sneakers.' },
+    { id:'p3', title:'CUSTOM SNEAKERS GAME OF THRONE HOUSE OF LANNISTER', slug:'got-lannister', price:5300000, compare:null, collection:'game-of-thrones', image:'https://sneakcares.site/cdn/shop/files/Game_Of_ThronesLannister.jpg?v=1776148023&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'A Lannister always pays their debts — and always wears the best kicks.' },
+    { id:'p4', title:'CUSTOM SNEAKERS GAME OF THRONE HOUSE OF GREYJOY', slug:'got-greyjoy', price:5300000, compare:null, collection:'game-of-thrones', image:'https://sneakcares.site/cdn/shop/files/GameOfThronesGreyjoy.jpg?v=1779201726&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'We Do Not Sow — House Greyjoy custom sneakers.' },
+    { id:'p5', title:'Custom Paint Sneakers Moana Unofficial With Air Force 1', slug:'moana-air-force', price:5100000, compare:null, collection:'disney', image:'https://sneakcares.site/cdn/shop/files/Moana_Out.jpg?v=1777986265&width=533', images:['https://sneakcares.site/cdn/shop/files/Moana_Shoot.jpg?v=1777986278&width=533'], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Custom painted Moana sneakers — adventure-inspired design on Air Force 1 base.' },
+    { id:'p6', title:'CUSTOM SNEAKERS LORD OF THE RINGS UNOFFICIAL', slug:'lotr', price:6600000, compare:null, collection:'lotr', image:'https://sneakcares.site/cdn/shop/files/Lord_Of_TheRings.jpg?v=1776618732&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'One Shoe to rule them all. Inspired by Tolkien\'s epic world.' },
+    { id:'p7', title:'CUSTOM PAINT SNEAKERS BOWSER UNOFFICIAL', slug:'bowser', price:6100000, compare:null, collection:'mario', image:'https://sneakcares.site/cdn/shop/files/Bowser.jpg?v=1768615352&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'King Koopa himself on your feet.' },
+    { id:'p8', title:'CUSTOM PAINT SNEAKERS MARIO UNOFFICIAL', slug:'mario', price:6100000, compare:null, collection:'mario', image:'https://sneakcares.site/cdn/shop/files/MarioBros.jpg?v=1768614570&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'It\'s-a me, Mario! Classic video game icon on your sneakers.' },
+    { id:'p9', title:'CUSTOM PAINT SNEAKERS LUIGI UNOFFICIAL', slug:'luigi', price:6100000, compare:null, collection:'mario', image:'https://sneakcares.site/cdn/shop/files/Luigi.jpg?v=1768614603&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Weegee! The green-clad hero gets his own custom sneaker tribute.' },
+    { id:'p10', title:'Custom Paint Sneakers Doraemon Unofficial', slug:'doraemon', price:5300000, compare:null, collection:'doraemon', image:'https://sneakcares.site/cdn/shop/files/Doraemon.jpg?v=1778027081&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'The blue robotic cat from the 22nd century on your sneakers!' },
+    { id:'p11', title:'Custom Paint Sneakers Nobita Unofficial', slug:'nobita', price:5300000, compare:null, collection:'doraemon', image:'https://sneakcares.site/cdn/shop/files/Nobita.jpg?v=1778027203&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Nobita-themed custom sneakers — the boy with the giant robot cat friend!' },
+    { id:'p12', title:'Custom Paint Sneakers Giant Unofficial', slug:'giant', price:5300000, compare:null, collection:'doraemon', image:'https://sneakcares.site/cdn/shop/files/Gian.jpg?v=1778027343&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Gian — the biggest bully with the biggest heart.' },
+    { id:'p13', title:'Custom Paint Sneakers Maui Unofficial With Air Force 1', slug:'maui', price:6400000, compare:null, collection:'disney', image:'https://sneakcares.site/cdn/shop/files/Maui_Sisi_Luar.jpg?v=1780600195&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Demigod-strength sneakers with Maui\'s iconic hook design.' },
+    { id:'p14', title:'CUSTOM PAINT SNEAKERS NINTENDO UNOFFICIAL', slug:'nintendo', price:6750000, compare:null, collection:'mario', image:'https://sneakcares.site/cdn/shop/files/Retro_ConsoleNP_3b438d8a-78c1-4590-8882-c91efcb20b42.jpg?v=1767263390&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Retro Nintendo console inspired custom sneakers.' },
+    { id:'p15', title:'CUSTOM PAINT SNEAKERS PRINCESS PEACH UNOFFICIAL', slug:'princess-peach', price:6100000, compare:null, collection:'mario', image:'https://sneakcares.site/cdn/shop/files/Princess_Peach.jpg?v=1768616393&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Her Royal Highness gets the sneaker treatment she deserves.' },
+    { id:'p16', title:'Custom Paint Sneakers Gambit XMEN 97 Unofficial', slug:'gambit-xmen', price:5600000, compare:null, collection:'xmen', image:'https://sneakcares.site/cdn/shop/files/Xmen97_Gambit.jpg?v=1779581340&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Mon ami! Gambit from X-Men 97 — charged with kinetic energy.' },
+    { id:'p17', title:'Custom Paint Sneakers Cyclops XMEN 97 Unofficial', slug:'cyclops-xmen', price:5600000, compare:null, collection:'xmen', image:'https://sneakcares.site/cdn/shop/files/Xmen97_Cycclops.jpg?v=1779581532&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Cyclops from X-Men 97 — optic blast power in sneaker form.' },
+    { id:'p18', title:'Custom Paint Sneakers Jean XMEN 97 Unofficial', slug:'jean-xmen', price:5500000, compare:null, collection:'xmen', image:'https://sneakcares.site/cdn/shop/files/Xmen97_Jean.jpg?v=1779581613&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Phoenix force energy captured in a custom sneaker design.' },
+    { id:'p19', title:'Custom Paint Sneakers Colossus XMEN 97 Unofficial', slug:'colossus-xmen', price:5400000, compare:null, collection:'xmen', image:'https://sneakcares.site/cdn/shop/files/Xmen97_Colossus.jpg?v=1781340893&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Organic steel armor design inspired by Colossus from X-Men 97.' },
+    { id:'p20', title:'Custom Paint Sneakers Iceman XMEN 97 Unofficial', slug:'iceman-xmen', price:5400000, compare:null, collection:'xmen', image:'https://sneakcares.site/cdn/shop/files/Xmen97_Iceman.jpg?v=1781341090&width=533', images:[], video:'', sizes:['36','37','38','39','40','41','42','43','44','45'], status:'active', desc:'Cool as ice — Bobby Drake\'s Iceman design on custom sneakers.' },
+  ],
+  collections: [
+    { id:'c1', name:'Toy Story', slug:'toy-story', image:'https://sneakcares.site/cdn/shop/collections/Koleksi_Toy_Story_82fb9509-bf4e-4608-bf78-d1f2315cba4a.jpg?v=1752717716&width=1500' },
+    { id:'c2', name:'Adventure Time', slug:'adventure-time', image:'https://sneakcares.site/cdn/shop/collections/Koleksi_Adventure_Time.jpg?v=1776070538&width=1500' },
+    { id:'c3', name:'Doraemon', slug:'doraemon', image:'https://sneakcares.site/cdn/shop/collections/Koleksi_DORAEMON_c2ddf074-6afc-421b-98c6-39f4b2688695.jpg?v=1778024661&width=1500' },
+    { id:'c4', name:'One Piece', slug:'one-piece', image:'https://sneakcares.site/cdn/shop/collections/Koleksi_One_Piece_73c68969-ea32-4331-8853-513c40c39383.jpg?v=1773815178&width=1500' },
+    { id:'c5', name:'New Drop!', slug:'new-drop', image:'https://sneakcares.site/cdn/shop/collections/Koleksi_ND.jpg?v=1761524015&width=1500' },
+    { id:'c6', name:'Game of Thrones', slug:'game-of-thrones', image:'https://sneakcares.site/cdn/shop/files/GOT_WEB_f29a476f-4174-48b8-b5d5-1b6ad62cae4a.jpg?v=1777118883&width=1500' },
+  ],
+  stories: [
+    { id:'s1', title:'From doubt to trust! Every pair is extraordinary!', date:'April 23, 2026', image:'https://sneakcares.site/cdn/shop/articles/sneakcares_story_1776949500913_9213942a-e073-4d86-91e9-c66e2a8a556d.jpg?v=1776995217&width=533', excerpt:'"Not every client comes with certainty. Some come with questions. @beatel14 and her team needed 20 custom pairs for an important event at @etoiledancecenter. And yes… there were doubts. Because when the stakes are high, trust must be earned.', content:'Full story content here...' },
+    { id:'s2', title:'A romantic wedding from Norway!', date:'April 23, 2026', image:'https://sneakcares.site/cdn/shop/articles/sneakcares_1776949127558_64bc796f-21d6-44ea-ba04-de2201b04f93.jpg?v=1776949442&width=533', excerpt:'Some stories travel across countries… just to become something unforgettable. @m.ali.latifmehr from Norway, came to us with a purpose — not just to order a pair of sneakers, but to create something meaningful for a wedding.', content:'Full story content here...' },
+    { id:'s3', title:'An amazing Jurassic Park-themed wedding!', date:'April 23, 2026', image:'https://sneakcares.site/cdn/shop/articles/sneakcares_story_1776947595893_853f3780-72e0-4ec1-a7ea-c0fcd0318da5.jpg?v=1776993695&width=533', excerpt:'She didn\'t just plan a wedding. She created a world of her own. All the way from America, @kallie.lynch_crummel had a vision — a wedding inspired by Jurassic Park. Bold. Unconventional. Unforgettable.', content:'Full story content here...' },
+  ],
+  hero: [
+    { id:'h1', image:'https://sneakcares.site/cdn/shop/files/WEBTOY.jpg?v=1781306786&width=1400', type:'image', title:'Every detail carries a story.', desc:'For those of you who want to express yourselves, have a story worth remembering, and want to cherish an unforgettable moment.', btn:'Shop Now!', order:0 },
+    { id:'h2', image:'https://sneakcares.site/cdn/shop/files/Web_Snoopy_Space.jpg?v=1778154925&width=1400', type:'image', title:'Time to space with Snoopy!', desc:'Custom painted sneakers inspired by everyone\'s favorite beagle — among the stars.', btn:'Shop Now!', order:1 },
+    { id:'h3', image:'https://sneakcares.site/cdn/shop/files/WEB_ADV.jpg?v=1777450670&width=1400', type:'image', title:'Step into your Adventure!', desc:'Mathematical! Custom sneakers for true adventure fans.', btn:'Shop Now!', order:2 },
+    { id:'h4', image:'https://sneakcares.site/cdn/shop/files/GOT_WEB_f29a476f-4174-48b8-b5d5-1b6ad62cae4a.jpg?v=1777118883&width=1400', type:'image', title:'New Drop from Westeros!', desc:'House-themed custom sneakers — which house will you wear?', btn:'Shop Now!', order:3 },
+    { id:'h5', image:'https://sneakcares.site/cdn/shop/files/Coraline_web.jpg?v=1777120149&width=1400', type:'image', title:"Coming from Coraline's World!", desc:'Dare to be different — custom sneakers inspired by the other world.', btn:'Shop Now!', order:4 },
+  ],
+  subscribers: [],
+  settings: {}
+};
+
+// ===================================================================
+// LOCAL STORAGE
+// ===================================================================
+function loadLocalDB() {
+  ['products','collections','stories','hero','subscribers','settings'].forEach(k => {
+    const s = localStorage.getItem('astra_'+k);
+    if (s) { try { DB[k] = JSON.parse(s); } catch(e){} }
+  });
+}
+function saveLocalDB(table) {
+  try { localStorage.setItem('astra_'+table, JSON.stringify(DB[table])); } catch(e){}
+}
+loadLocalDB();
+
+// ===================================================================
+// SUPABASE DATA LAYER
+// ===================================================================
+async function dbGet(table) {
+  if (sb) {
+    try {
+      const { data, error } = await sb.from(table).select('*');
+      if (!error && data && data.length > 0) { DB[table] = data; return data; }
+    } catch(e) {}
+  }
+  return DB[table] || [];
+}
+
+async function dbUpsert(table, item) {
+  const existing = DB[table].findIndex(r => r.id === item.id);
+  if (existing >= 0) DB[table][existing] = item; else DB[table].push(item);
+  saveLocalDB(table);
+  if (sb) { try { await sb.from(table).upsert(item); } catch(e) {} }
+}
+
+async function dbDelete(table, id) {
+  DB[table] = DB[table].filter(r => r.id !== id);
+  saveLocalDB(table);
+  if (sb) { try { await sb.from(table).delete().eq('id', id); } catch(e) {} }
+}
+
+// ===================================================================
+// IMAGE UPLOAD (local – base64)
+// ===================================================================
+function handleImageUpload(input, urlFieldId, previewId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    document.getElementById(urlFieldId).value = dataUrl;
+    const preview = document.getElementById(previewId);
+    if (preview) {
+      if (file.type.startsWith('video/')) {
+        preview.innerHTML = `<video src="${dataUrl}" style="width:64px;height:64px;object-fit:cover" muted playsinline></video>`;
+      } else {
+        preview.innerHTML = `<img src="${dataUrl}" alt="Preview">`;
+      }
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleMultiImageUpload(input, urlFieldId, previewId) {
+  const files = Array.from(input.files);
+  const preview = document.getElementById(previewId);
+  const existing = document.getElementById(urlFieldId).value.trim();
+  const urls = existing ? existing.split(',').map(s=>s.trim()).filter(Boolean) : [];
+  let remaining = files.length;
+  const newUrls = [];
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      newUrls.push(e.target.result);
+      remaining--;
+      if (remaining === 0) {
+        const allUrls = [...urls, ...newUrls];
+        document.getElementById(urlFieldId).value = allUrls.join(', ');
+        if (preview) {
+          preview.innerHTML = allUrls.map(u => `<img src="${u}" alt="img" style="width:56px;height:56px;object-fit:cover;border:1px solid #eee">`).join('');
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ===================================================================
+// CART
+// ===================================================================
+let cart = JSON.parse(localStorage.getItem('astra_cart') || '[]');
+function saveCart() { localStorage.setItem('astra_cart', JSON.stringify(cart)); }
+
+function addToCart(productId, size, qty=1) {
+  const product = DB.products.find(p => p.id === productId || p.slug === productId);
+  if (!product) return;
+  const key = product.id + '-' + size;
+  const existing = cart.find(i => i.key === key);
+  if (existing) existing.qty += qty;
+  else cart.push({ key, productId:product.id, title:product.title, price:product.price, image:product.image, size, qty });
+  saveCart(); updateCartUI(); showToast('Added to cart!'); openCart();
+}
+
+function removeFromCart(key) {
+  cart = cart.filter(i => i.key !== key);
+  saveCart(); updateCartUI();
+}
+
+function updateCartQty(key, delta) {
+  const item = cart.find(i => i.key === key);
+  if (!item) return;
+  item.qty = Math.max(0, item.qty + delta);
+  if (item.qty === 0) removeFromCart(key);
+  else { saveCart(); updateCartUI(); }
+}
+
+function updateCartUI() {
+  const total = cart.reduce((s,i) => s + i.qty, 0);
+  document.getElementById('cart-count').textContent = total;
+  const mcc = document.getElementById('m-cart-count');
+  if (mcc) mcc.textContent = total;
+
+  const container = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  if (!container) return;
+
+  if (cart.length === 0) {
+    container.innerHTML = '<div class="cart-empty"><p>Your cart is empty.</p><button class="btn-dark" onclick="toggleCart();showPage(\'catalog\')">Continue Shopping</button></div>';
+    footer.style.display = 'none';
+  } else {
+    container.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <img src="${item.image&&item.image.startsWith('data:')?item.image:item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/80'">
+        <div class="cart-item-info">
+          <div class="cart-item-title">${item.title}</div>
+          <div class="cart-item-variant">Size: ${item.size}</div>
+          <div class="cart-item-price">${formatPriceMRP(item.price)}</div>
+          <div class="cart-item-qty">
+            <button onclick="updateCartQty('${item.key}',-1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateCartQty('${item.key}',1)">+</button>
+          </div>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.key}')">Remove</button>
+        </div>
+      </div>
+    `).join('');
+    const subtotal = cart.reduce((s,i) => s + i.price*i.qty, 0);
+    document.getElementById('cartSubtotal').textContent = formatPriceMRP(subtotal);
+    footer.style.display = 'block';
+  }
+}
+
+function toggleCart() {
+  document.getElementById('cart-panel').classList.toggle('open');
+  document.getElementById('cart-overlay').classList.toggle('open');
+}
+function openCart() {
+  document.getElementById('cart-panel').classList.add('open');
+  document.getElementById('cart-overlay').classList.add('open');
+}
+
+// ===================================================================
+// PAGES + URL ROUTING (shareable product URLs)
+// ===================================================================
+let currentPage = 'home';
+
+function showPage(page, extra) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  if (!el) return;
+  el.classList.add('active');
+  currentPage = page;
+  window.scrollTo(0,0);
+  if (page === 'catalog') { renderCatalog(); updateURLState(page); }
+  else if (page === 'product' && extra) updateURLState(page, extra);
+  else if (page === 'home') updateURLState('home');
+  else updateURLState(page);
+}
+
+function updateURLState(page, slug) {
+  let path = '/';
+  if (page === 'catalog') path = '/catalog';
+  else if (page === 'product' && slug) {
+    const p = DB.products.find(x => x.slug===slug || x.id===slug);
+    if (p) {
+      const col = DB.collections.find(c => c.slug === p.collection);
+      path = '/' + (col ? col.slug : 'products') + '/' + (p.slug || p.id);
+    }
+  } else if (page === 'contact') path = '/contact';
+  else if (page === 'stories') path = '/stories';
+  try { history.replaceState({page, slug:slug||null}, '', path); } catch(e){}
+}
+
+// Handle browser back/forward
+window.addEventListener('popstate', e => {
+  if (e.state) {
+    if (e.state.page === 'product' && e.state.slug) { showPage('product'); openProduct(e.state.slug, true); }
+    else showPage(e.state.page||'home');
+  }
+});
+
+// Handle direct URL on load
+window.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(Boolean);
+  if (parts.length === 2) {
+    // /collection/product-slug
+    const slug = parts[1];
+    const p = DB.products.find(x => x.slug===slug || x.id===slug);
+    if (p) { showPage('product'); openProduct(slug, true); return; }
+  } else if (parts.length === 1) {
+    if (parts[0] === 'catalog') { showPage('catalog'); return; }
+    if (parts[0] === 'contact') { showPage('contact'); return; }
+    if (parts[0] === 'stories') { showPage('stories'); renderStoriesPage(); return; }
+  }
+  showPage('home');
+});
+
+// ===================================================================
+// HERO SLIDESHOW (supports video + image)
+// ===================================================================
+let heroIdx = 0;
+let heroAuto;
+let currentHeroVideo = null;
+
+function buildHero() {
+  const slides = document.getElementById('heroSlides');
+  const dots = document.getElementById('heroDots');
+  if (!slides) return;
+  const sorted = [...DB.hero].sort((a,b) => (a.order||0)-(b.order||0));
+  slides.innerHTML = sorted.map((s,i) => {
+    const isVideo = s.type==='video' || (s.image && (s.image.endsWith('.mp4')||s.image.endsWith('.webm')||s.image.includes('video')));
+    const mediaEl = isVideo
+      ? `<video src="${s.image}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;opacity:.88" data-hero-video></video>`
+      : `<img src="${s.image}" alt="${s.title||''}" loading="${i===0?'eager':'lazy'}">`;
+    return `<div class="hero-slide" data-type="${isVideo?'video':'image'}">
+      ${mediaEl}
+      <div class="hero-overlay">
+        <h2>${s.title||''}</h2>
+        <p>${s.desc||''}</p>
+        <a href="#" class="btn-primary" onclick="showPage('catalog')">${s.btn||'Shop Now!'}</a>
+      </div>
+    </div>`;
+  }).join('');
+  dots.innerHTML = sorted.map((_,i) => `<button class="hero-dot${i===0?' active':''}" onclick="goHero(${i})" aria-label="Slide ${i+1}"></button>`).join('');
+  goHero(0);
+}
+
+function goHero(idx) {
+  const slides = document.querySelectorAll('.hero-slide');
+  if (!slides.length) return;
+  heroIdx = (idx + slides.length) % slides.length;
+  document.getElementById('heroSlides').style.transform = `translateX(-${heroIdx*100}%)`;
+  document.querySelectorAll('.hero-dot').forEach((d,i) => d.classList.toggle('active', i===heroIdx));
+  // Check if current slide has video
+  const activeSlide = slides[heroIdx];
+  const vid = activeSlide ? activeSlide.querySelector('[data-hero-video]') : null;
+  const vcBtns = document.getElementById('heroVidControls');
+  if (vid) {
+    currentHeroVideo = vid;
+    vcBtns.style.display = 'flex';
+    updateHeroVideoIcons();
+  } else {
+    currentHeroVideo = null;
+    vcBtns.style.display = 'none';
+  }
+}
+
+function moveHero(dir) { clearInterval(heroAuto); goHero(heroIdx+dir); startHeroAuto(); }
+function startHeroAuto() { heroAuto = setInterval(() => moveHero(1), 5500); }
+
+// Apple-style SVG play/pause/mute icons
+function toggleHeroVideo() {
+  if (!currentHeroVideo) return;
+  if (currentHeroVideo.paused) currentHeroVideo.play(); else currentHeroVideo.pause();
+  updateHeroVideoIcons();
+}
+function toggleHeroMute() {
+  if (!currentHeroVideo) return;
+  currentHeroVideo.muted = !currentHeroVideo.muted;
+  updateHeroVideoIcons();
+}
+function updateHeroVideoIcons() {
+  if (!currentHeroVideo) return;
+  const playIcon = document.getElementById('heroPlayIcon');
+  const muteIcon = document.getElementById('heroMuteIcon');
+  // Play/Pause SVG paths
+  if (currentHeroVideo.paused) {
+    playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+  } else {
+    playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+  }
+  // Mute/Unmute SVG paths
+  if (currentHeroVideo.muted) {
+    muteIcon.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="1.5"/><line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="1.5"/>';
+  } else {
+    muteIcon.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+  }
+}
+
+// ===================================================================
+// COLLECTIONS RENDER (dynamic filter update too)
+// ===================================================================
+function renderCollections() {
+  const grid = document.getElementById('collectionsGrid');
+  if (!grid) return;
+  // Show all collections on home
+  grid.innerHTML = DB.collections.map(c => `
+    <div class="collection-card" onclick="filterByCollection('${c.slug}')">
+      <img src="${c.image}" alt="${c.name}" loading="lazy">
+      <div class="collection-card-label"><h3>${c.name}</h3></div>
+    </div>
+  `).join('');
+  rebuildCollectionFilters();
+}
+
+function filterByCollection(slug) {
+  showPage('catalog');
+  setTimeout(() => {
+    document.querySelectorAll('[data-cat]').forEach(cb => {
+      cb.checked = cb.dataset.cat === slug;
+    });
+    filterProducts();
+  }, 100);
+}
+
+function rebuildCollectionFilters() {
+  const filterDiv = document.getElementById('filter-cat');
+  if (!filterDiv) return;
+  filterDiv.innerHTML = DB.collections.map(c => `
+    <label class="filter-option">
+      <input type="checkbox" data-cat="${c.slug}" onchange="filterProducts()">
+      <span>${c.name}</span>
+    </label>
+  `).join('');
+  // Also rebuild the product modal collection dropdown
+  const pmColl = document.getElementById('pm-collection');
+  if (pmColl) {
+    const firstOpt = pmColl.querySelector('option:first-child');
+    pmColl.innerHTML = '';
+    const def = document.createElement('option');
+    def.value = ''; def.textContent = 'Select collection';
+    pmColl.appendChild(def);
+    DB.collections.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.slug; o.textContent = c.name;
+      pmColl.appendChild(o);
+    });
+  }
+}
+
+// ===================================================================
+// FEATURED PRODUCTS
+// ===================================================================
+function renderFeatured() {
+  const grid = document.getElementById('featuredProducts');
+  if (!grid) return;
+  const got = DB.products.filter(p => p.collection === 'game-of-thrones' && p.status==='active').slice(0,4);
+  const shown = got.length ? got : DB.products.filter(p=>p.status==='active').slice(0,4);
+  grid.innerHTML = shown.map(p => productCardHTML(p)).join('');
+}
+
+function productCardHTML(p) {
+  return `
+    <div class="product-card" onclick="openProduct('${p.slug || p.id}')">
+      <div class="product-card-img">
+        ${p.compare ? '<span class="product-card-badge">SALE</span>' : ''}
+        <img src="${p.image}" alt="${p.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400'">
+      </div>
+      <div class="product-card-info">
+        <h3>${p.title}</h3>
+        <div class="product-card-price">
+          ${p.compare ? `<del>${formatPriceMRP(p.compare)}</del> ` : ''}
+          ${formatPriceMRP(p.price)}
+          <span class="mrp-label">MRP incl. of all taxes</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ===================================================================
+// STORIES HOME
+// ===================================================================
+function renderStories() {
+  const grid = document.getElementById('storiesGrid');
+  if (!grid) return;
+  grid.innerHTML = DB.stories.slice(0,3).map(s => `
+    <div class="story-card">
+      <div class="story-card-img"><img src="${s.image}" alt="${s.title}" loading="lazy"></div>
+      <div class="story-card-date">${s.date}</div>
+      <h3>${s.title}</h3>
+      <p>${s.excerpt}</p>
+    </div>
+  `).join('');
+}
+
+function renderStoriesPage() {
+  const grid = document.getElementById('storiesPageGrid');
+  if (!grid) return;
+  grid.innerHTML = DB.stories.map(s => `
+    <div style="display:flex;gap:36px;padding-bottom:44px;border-bottom:1px solid #eee;flex-wrap:wrap">
+      <img src="${s.image}" alt="${s.title}" style="width:300px;height:200px;object-fit:cover;flex-shrink:0">
+      <div style="flex:1;min-width:240px">
+        <div style="font-size:11px;color:#888;margin-bottom:8px;letter-spacing:.05em">${s.date}</div>
+        <h3 style="font-size:20px;font-weight:900;margin-bottom:12px;line-height:1.2;letter-spacing:-.02em">${s.title}</h3>
+        <p style="font-size:14px;color:#555;line-height:1.75">${s.excerpt}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================================================================
+// CATALOG
+// ===================================================================
+let catalogPage = 1;
+const perPage = 16;
+let filteredProducts = [];
+let currentSort = 'featured';
+
+function renderCatalog() {
+  filteredProducts = [...DB.products].filter(p => p.status === 'active');
+  applyCatalogSort();
+  renderCatalogPage();
+  document.getElementById('catalogCount').textContent = `${filteredProducts.length} products`;
+  rebuildCollectionFilters();
+}
+
+function filterProducts() {
+  filteredProducts = DB.products.filter(p => p.status === 'active');
+  const minPrice = parseFloat(document.getElementById('priceMin').value) || 0;
+  const maxPrice = parseFloat(document.getElementById('priceMax').value) || Infinity;
+  filteredProducts = filteredProducts.filter(p => p.price >= minPrice && p.price <= maxPrice);
+  const catChecks = [...document.querySelectorAll('[data-cat]:checked')].map(c => c.dataset.cat);
+  if (catChecks.length) filteredProducts = filteredProducts.filter(p => catChecks.includes(p.collection));
+  applyCatalogSort();
+  catalogPage = 1;
+  renderCatalogPage();
+  document.getElementById('catalogCount').textContent = `${filteredProducts.length} products`;
+}
+
+function sortProducts(val) {
+  currentSort = val;
+  applyCatalogSort();
+  catalogPage = 1;
+  renderCatalogPage();
+}
+
+function applyCatalogSort() {
+  switch(currentSort) {
+    case 'az': filteredProducts.sort((a,b) => a.title.localeCompare(b.title)); break;
+    case 'za': filteredProducts.sort((a,b) => b.title.localeCompare(a.title)); break;
+    case 'low': filteredProducts.sort((a,b) => a.price - b.price); break;
+    case 'high': filteredProducts.sort((a,b) => b.price - a.price); break;
+    default: break;
+  }
+}
+
+function renderCatalogPage() {
+  const start = (catalogPage-1)*perPage;
+  const pageItems = filteredProducts.slice(start, start+perPage);
+  const grid = document.getElementById('catalogProducts');
+  grid.innerHTML = pageItems.length ? pageItems.map(p => productCardHTML(p)).join('') : '<p style="grid-column:1/-1;text-align:center;color:#888;padding:60px">No products found.</p>';
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = Math.ceil(filteredProducts.length / perPage);
+  const pg = document.getElementById('catalogPagination');
+  if (total <= 1) { pg.innerHTML=''; return; }
+  let html = '';
+  if (catalogPage > 1) html += `<button class="page-btn" onclick="goPage(${catalogPage-1})">←</button>`;
+  for (let i=1;i<=total;i++) {
+    if (i===1||i===total||Math.abs(i-catalogPage)<=1) html += `<button class="page-btn${i===catalogPage?' active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if (Math.abs(i-catalogPage)===2) html += `<span class="page-btn dots">…</span>`;
+  }
+  if (catalogPage < total) html += `<button class="page-btn" onclick="goPage(${catalogPage+1})">→</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) { catalogPage = p; renderCatalogPage(); window.scrollTo(0,200); }
+
+function toggleFilter(id) {
+  const icons = {avail:'avail-icon',price:'price-icon',cat:'cat-icon'};
+  const el = document.getElementById('filter-'+id);
+  const icon = document.getElementById(icons[id]);
+  if (el) { const hidden = el.style.display==='none'; el.style.display=hidden?'':'none'; if(icon)icon.textContent=hidden?'-':'+'; }
+}
+function toggleMobileFilter() {
+  document.getElementById('filterSidebar').classList.toggle('mobile-open');
+}
+
+// ===================================================================
+// PRODUCT DETAIL (with shareable URL)
+// ===================================================================
+function openProduct(slugOrId, noHistory) {
+  const p = DB.products.find(x => x.slug===slugOrId || x.id===slugOrId);
+  if (!p) return;
+  selectedSize = null;
+  document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+  document.getElementById('page-product').classList.add('active');
+  currentPage = 'product';
+  window.scrollTo(0,0);
+  renderProductDetail(p);
+  if (!noHistory) updateURLState('product', p.slug||p.id);
+}
+function openProductById(slugOrId) { openProduct(slugOrId); }
+
+function renderProductDetail(p) {
+  const allImages = [p.image, ...(p.images||[])].filter(Boolean);
+  const sizes = (p.sizes || ['36','37','38','39','40','41','42','43','44','45']);
+  const collection = DB.collections.find(c => c.slug === p.collection);
+  const shareUrl = window.location.origin + '/' + (collection?collection.slug:'products') + '/' + (p.slug||p.id);
+
+  document.getElementById('productDetailContent').innerHTML = `
+    <nav class="breadcrumb">
+      <a href="#" onclick="showPage('home')">Home</a><span>/</span>
+      ${collection?`<a href="#" onclick="filterByCollection('${collection.slug}')">${collection.name}</a><span>/</span>`:''}
+      <span>${p.title}</span>
+    </nav>
+    <div class="product-layout">
+      <div class="product-gallery">
+        <div class="gallery-main" id="galleryMain">
+          ${isVideoUrl(allImages[0])
+            ? `<video src="${allImages[0]}" autoplay muted loop playsinline id="galleryMainVideo"></video>`
+            : `<img src="${allImages[0]}" alt="${p.title}" id="galleryMainImg">`
+          }
+        </div>
+        ${allImages.length>1 || p.video ? `
+        <div class="gallery-thumbs">
+          ${allImages.map((img,i)=>`
+            <div class="gallery-thumb${i===0?' active':''}" onclick="setGalleryMedia('${img}',this)">
+              ${isVideoUrl(img)
+                ? `<video src="${img}" muted style="width:100%;height:100%;object-fit:cover"></video>`
+                : `<img src="${img}" alt="${p.title}">`
+              }
+            </div>
+          `).join('')}
+          ${p.video?`<div class="gallery-thumb" onclick="setGalleryMedia('${p.video}',this)" title="Product Video">
+            <video src="${p.video}" muted style="width:100%;height:100%;object-fit:cover"></video>
+          </div>`:''}
+        </div>` : ''}
+      </div>
+      <div class="product-info">
+        ${p.compare ? '<span class="product-badge">SALE</span>' : ''}
+        <h1>${p.title}</h1>
+        <div class="product-price">
+          ${p.compare ? `<del>${formatPriceMRP(p.compare)}</del> ` : ''}
+          ${formatPriceMRP(p.price)}
+        </div>
+        <p class="mrp-tag">MRP: <strong>${formatPriceMRP(p.price)}</strong> — inclusive of all taxes. Shipping included.</p>
+        <div class="option-section">
+          <label>Size <small style="color:#888;font-weight:400;text-transform:none;font-size:11px">— select one</small></label>
+          <div class="size-grid" id="sizeGrid">
+            ${sizes.map(s=>`<button class="size-btn" onclick="selectSize(this,'${s}')">${s}</button>`).join('')}
+          </div>
+        </div>
+        <div class="qty-row">
+          <label>Quantity</label>
+          <div class="qty-ctrl">
+            <button onclick="changeQty(-1)">−</button>
+            <input type="number" id="qtyInput" value="1" min="1" max="10">
+            <button onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+        <button class="add-to-cart-btn" onclick="handleAddToCart('${p.id}')">Add to Cart</button>
+        <button class="buy-now-btn" onclick="handleAddToCart('${p.id}');showToast('Checkout coming soon!')">Buy it now</button>
+        <div style="margin-bottom:20px">
+          <button class="share-btn" onclick="shareProduct('${shareUrl}','${p.title.replace(/'/g,"\\'")}')">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share this product
+          </button>
+        </div>
+        <div class="product-meta">
+          ${collection ? `<p><strong>Collection:</strong> ${collection.name}</p>` : ''}
+          <p><strong>SKU:</strong> AC-${p.id.toUpperCase()}</p>
+          <p><strong>Shipping:</strong> Price includes shipping — Worldwide delivery</p>
+        </div>
+        <div class="product-accordion">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">Description <span class="accordion-icon">+</span></div>
+            <div class="accordion-body"><p>${p.desc || 'Custom hand-painted sneakers — each pair is unique and made to order.'}</p></div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">Shipping & Returns <span class="accordion-icon">+</span></div>
+            <div class="accordion-body">
+              <p>Price includes worldwide shipping. Production time: 7–14 business days. Shipping: 3–7 business days.</p>
+              <p style="margin-top:8px">Custom items are non-refundable unless there is a defect or error on our part.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">Size Guide <span class="accordion-icon">+</span></div>
+            <div class="accordion-body">
+              <p>We use EU sizing. If you're between sizes, we recommend sizing up.</p>
+              <table style="width:100%;font-size:12px;margin-top:10px;border-collapse:collapse">
+                <tr style="border-bottom:1px solid #eee"><th style="text-align:left;padding:5px;font-weight:700">EU</th><th style="text-align:left;padding:5px;font-weight:700">US Men</th><th style="text-align:left;padding:5px;font-weight:700">US Women</th><th style="text-align:left;padding:5px;font-weight:700">UK</th></tr>
+                <tr style="border-bottom:1px solid #f5f5f5"><td style="padding:5px">36</td><td style="padding:5px">4</td><td style="padding:5px">5.5</td><td style="padding:5px">3.5</td></tr>
+                <tr style="border-bottom:1px solid #f5f5f5"><td style="padding:5px">38</td><td style="padding:5px">6</td><td style="padding:5px">7.5</td><td style="padding:5px">5.5</td></tr>
+                <tr style="border-bottom:1px solid #f5f5f5"><td style="padding:5px">40</td><td style="padding:5px">7.5</td><td style="padding:5px">9</td><td style="padding:5px">7</td></tr>
+                <tr style="border-bottom:1px solid #f5f5f5"><td style="padding:5px">42</td><td style="padding:5px">9</td><td style="padding:5px">10.5</td><td style="padding:5px">8.5</td></tr>
+                <tr><td style="padding:5px">44</td><td style="padding:5px">10.5</td><td style="padding:5px">12</td><td style="padding:5px">10</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:72px;padding-top:44px;border-top:1px solid #eee">
+      <h2 style="font-size:26px;font-weight:900;margin-bottom:28px;letter-spacing:-.02em">You may also like</h2>
+      <div class="products-grid">
+        ${DB.products.filter(x=>x.id!==p.id && x.status==='active').slice(0,4).map(x=>productCardHTML(x)).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function isVideoUrl(url) {
+  if (!url) return false;
+  return url.includes('.mp4')||url.includes('.webm')||url.includes('.ogg')||(url.startsWith('data:video'));
+}
+
+function setGalleryMedia(src, thumb) {
+  const main = document.getElementById('galleryMain');
+  if (isVideoUrl(src)) {
+    main.innerHTML = `<video src="${src}" autoplay muted loop playsinline id="galleryMainVideo" style="width:100%;height:100%;object-fit:cover"></video>`;
+  } else {
+    main.innerHTML = `<img src="${src}" alt="" id="galleryMainImg" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+  if (thumb) thumb.classList.add('active');
+}
+
+function shareProduct(url, title) {
+  if (navigator.share) {
+    navigator.share({ title, url }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url).then(() => showToast('Link copied!')).catch(()=>{
+      showToast('Share: ' + url);
+    });
+  }
+}
+
+let selectedSize = null;
+function selectSize(btn, size) {
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedSize = size;
+}
+function changeQty(d) {
+  const input = document.getElementById('qtyInput');
+  if (!input) return;
+  input.value = Math.max(1, Math.min(10, parseInt(input.value||1) + d));
+}
+function handleAddToCart(productId) {
+  if (!selectedSize) { showToast('Please select a size!'); return; }
+  const qty = parseInt(document.getElementById('qtyInput')?.value || 1);
+  addToCart(productId, selectedSize, qty);
+}
+function toggleAccordion(header) {
+  const item = header.parentElement;
+  const body = item.querySelector('.accordion-body');
+  const icon = item.querySelector('.accordion-icon');
+  const isOpen = item.classList.contains('open');
+  item.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+  icon.textContent = isOpen ? '+' : '−';
+}
+
+// ===================================================================
+// SEARCH
+// ===================================================================
+function toggleSearch() {
+  const overlay = document.getElementById('search-overlay');
+  overlay.classList.toggle('open');
+  if (overlay.classList.contains('open')) {
+    setTimeout(() => document.getElementById('searchInput').focus(), 100);
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').innerHTML = '';
+  }
+}
+function searchProducts(q) {
+  const results = document.getElementById('searchResults');
+  if (!q.trim()) { results.innerHTML = ''; return; }
+  const found = DB.products.filter(p => p.title.toLowerCase().includes(q.toLowerCase()) || (p.desc||'').toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  results.innerHTML = found.length ? found.map(p => `
+    <div class="search-result-item" onclick="toggleSearch();openProduct('${p.slug||p.id}')">
+      <img class="search-result-img" src="${p.image}" alt="${p.title}">
+      <div class="search-result-info">
+        <h4>${p.title}</h4>
+        <p>${formatPriceMRP(p.price)}</p>
+      </div>
+    </div>
+  `).join('') : '<p style="color:#888;padding:16px 0;font-size:14px">No products found.</p>';
+}
+
+// ===================================================================
+// NEWSLETTER
+// ===================================================================
+function subscribeNewsletter(e) {
+  e.preventDefault();
+  const email = document.getElementById('newsletter-email').value;
+  const exists = DB.subscribers.find(s => s.email === email);
+  if (!exists) {
+    const sub = { id:'sub'+Date.now(), email, date: new Date().toLocaleDateString('en-IN') };
+    DB.subscribers.push(sub);
+    saveLocalDB('subscribers');
+    if (sb) sb.from('subscribers').insert(sub).catch(()=>{});
+    const ss = document.getElementById('stat-subscribers');
+    if(ss) ss.textContent = DB.subscribers.length;
+  }
+  document.getElementById('newsletter-email').value = '';
+  showToast('Subscribed successfully!');
+}
+
+function submitContact(e) {
+  e.preventDefault();
+  showToast('Message sent! We\'ll reply within 24 hours.');
+  e.target.reset();
+}
+
+// ===================================================================
+// UTILS – Indian Currency (MRP)
+// ===================================================================
+function formatPriceMRP(n) {
+  const num = Number(n);
+  if (num >= 100000) return '₹' + (num/100000).toFixed(2).replace(/\.?0+$/,'') + ' L';
+  return '₹' + num.toLocaleString('en-IN');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function toggleMobileNav() {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('hamburgerBtn');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}
+
+// ===================================================================
+// ADMIN PANEL
+// ===================================================================
+function openAdmin() {
+  document.getElementById('admin-panel').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  loadAdminData();
+}
+function closeAdmin() {
+  document.getElementById('admin-panel').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function showAdminSection(name, navItem) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('admin-'+name).classList.add('active');
+  document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active'));
+  if (navItem) navItem.classList.add('active');
+}
+
+async function loadAllData() {
+  await Promise.all(['products','collections','stories','hero','subscribers'].map(t => dbGet(t)));
+  buildHero(); startHeroAuto();
+  renderCollections(); renderFeatured(); renderStories();
+  if (currentPage === 'catalog') renderCatalog();
+  if (document.getElementById('admin-panel').style.display==='block') loadAdminData();
+}
+
+function loadAdminData() {
+  const se = id => document.getElementById(id);
+  if(se('stat-products')) se('stat-products').textContent = DB.products.length;
+  if(se('stat-collections')) se('stat-collections').textContent = DB.collections.length;
+  if(se('stat-stories')) se('stat-stories').textContent = DB.stories.length;
+  if(se('stat-subscribers')) se('stat-subscribers').textContent = DB.subscribers.length;
+  if(se('admin-product-count')) se('admin-product-count').textContent = `All Products (${DB.products.length})`;
+  renderAdminProducts();
+  renderAdminCollections();
+  renderAdminStories();
+  renderAdminHero();
+  renderAdminSubscribers();
+  rebuildCollectionFilters();
+}
+
+function renderAdminProducts(filter='') {
+  const products = DB.products.filter(p => !filter || p.title.toLowerCase().includes(filter.toLowerCase()));
+  const col = c => DB.collections.find(x=>x.slug===c);
+  const rows = products.map(p => `
+    <tr>
+      <td><img src="${p.image&&p.image.length<300?p.image:p.image?p.image.substring(0,100)+'...':''}" alt="" onerror="this.style.display='none'"></td>
+      <td style="max-width:200px;font-size:12px">${p.title}</td>
+      <td style="white-space:nowrap">${formatPriceMRP(p.price)}</td>
+      <td>${col(p.collection)?col(p.collection).name:p.collection||'—'}</td>
+      <td style="font-size:11px;max-width:120px">${(p.sizes||[]).join(', ')}</td>
+      <td><span class="badge ${p.status==='active'?'green':'yellow'}">${p.status||'active'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="admin-btn secondary" style="padding:5px 10px;font-size:11px;margin-right:4px" onclick="editProduct('${p.id}')">Edit</button>
+        <button class="admin-btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteItem('products','${p.id}')">Del</button>
+      </td>
+    </tr>
+  `).join('');
+  const tbody = document.getElementById('adminProductRows');
+  if(tbody) tbody.innerHTML = rows || '<tr><td colspan="7" style="text-align:center;color:#888;padding:20px">No products yet.</td></tr>';
+  const dashTbody = document.getElementById('dashProductRows');
+  if(dashTbody) dashTbody.innerHTML = products.slice(0,6).map(p=>`
+    <tr>
+      <td><img src="${p.image&&p.image.length<200?p.image:''}" alt="" onerror="this.style.display='none'"></td>
+      <td style="font-size:12px;max-width:200px">${p.title}</td>
+      <td>${formatPriceMRP(p.price)}</td>
+      <td>${p.collection||'—'}</td>
+      <td><span class="badge ${p.status==='active'?'green':'yellow'}">${p.status||'active'}</span></td>
+      <td><button class="admin-btn secondary" style="padding:5px 10px;font-size:11px" onclick="editProduct('${p.id}')">Edit</button></td>
+    </tr>
+  `).join('');
+}
+
+function filterAdminProducts(val) { renderAdminProducts(val); }
+
+function renderAdminCollections() {
+  const el = document.getElementById('adminCollectionRows');
+  if(!el) return;
+  el.innerHTML = DB.collections.map(c => `
+    <tr>
+      <td><img src="${c.image&&c.image.length<200?c.image:''}" alt="" onerror="this.style.display='none'" style="width:44px;height:44px;object-fit:cover"></td>
+      <td><strong>${c.name}</strong></td>
+      <td><code style="font-size:11px;background:#f5f5f5;padding:2px 6px">${c.slug}</code></td>
+      <td>${DB.products.filter(p=>p.collection===c.slug).length} products</td>
+      <td style="white-space:nowrap">
+        <button class="admin-btn secondary" style="padding:5px 10px;font-size:11px;margin-right:4px" onclick="editCollection('${c.id}')">Edit</button>
+        <button class="admin-btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteItem('collections','${c.id}')">Del</button>
+      </td>
+    </tr>
+  `).join('') || '<tr><td colspan="5" style="text-align:center;color:#888;padding:20px">No collections yet.</td></tr>';
+}
+
+function renderAdminStories() {
+  const el = document.getElementById('adminStoryRows');
+  if(!el) return;
+  el.innerHTML = DB.stories.map(s => `
+    <tr>
+      <td><img src="${s.image&&s.image.length<200?s.image:''}" alt="" onerror="this.style.display='none'" style="width:60px;height:44px;object-fit:cover"></td>
+      <td style="max-width:180px;font-size:12px">${s.title}</td>
+      <td style="white-space:nowrap">${s.date}</td>
+      <td style="font-size:12px;max-width:180px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${s.excerpt}</td>
+      <td style="white-space:nowrap">
+        <button class="admin-btn secondary" style="padding:5px 10px;font-size:11px;margin-right:4px" onclick="editStory('${s.id}')">Edit</button>
+        <button class="admin-btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteItem('stories','${s.id}')">Del</button>
+      </td>
+    </tr>
+  `).join('') || '<tr><td colspan="5" style="text-align:center;color:#888;padding:20px">No stories yet.</td></tr>';
+}
+
+function renderAdminHero() {
+  const el = document.getElementById('adminHeroRows');
+  if(!el) return;
+  el.innerHTML = DB.hero.map(h => {
+    const isVid = h.type==='video'||isVideoUrl(h.image);
+    return `<tr>
+      <td>${isVid
+        ? `<video src="${h.image&&h.image.length<200?h.image:''}" style="width:80px;height:44px;object-fit:cover" muted></video>`
+        : `<img src="${h.image&&h.image.length<200?h.image:''}" alt="" style="width:80px;height:44px;object-fit:cover" onerror="this.style.display='none'">`
+      }</td>
+      <td><span class="badge ${isVid?'yellow':'gray'}">${isVid?'VIDEO':'IMAGE'}</span></td>
+      <td style="max-width:140px;font-size:12px">${h.title||'—'}</td>
+      <td style="font-size:12px;max-width:160px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${h.desc||'—'}</td>
+      <td>${h.order||0}</td>
+      <td style="white-space:nowrap">
+        <button class="admin-btn secondary" style="padding:5px 10px;font-size:11px;margin-right:4px" onclick="editHero('${h.id}')">Edit</button>
+        <button class="admin-btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteItem('hero','${h.id}')">Del</button>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">No slides yet.</td></tr>';
+}
+
+function renderAdminSubscribers() {
+  const el = document.getElementById('adminSubscriberRows');
+  if(!el) return;
+  el.innerHTML = DB.subscribers.length
+    ? DB.subscribers.map(s => `
+    <tr>
+      <td>${s.email}</td>
+      <td>${s.date||'—'}</td>
+      <td><button class="admin-btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteItem('subscribers','${s.id}')">Remove</button></td>
+    </tr>`).join('')
+    : '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px">No subscribers yet.</td></tr>';
+}
+
+// ===================================================================
+// PRODUCT MODAL
+// ===================================================================
+function openProductModal() {
+  document.getElementById('productModalTitle').textContent = 'Add Product';
+  ['pm-id','pm-title','pm-price','pm-compare','pm-image','pm-images','pm-desc','pm-slug','pm-video'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('pm-collection').value = '';
+  document.getElementById('pm-status').value = 'active';
+  document.getElementById('pm-sizes').value = '36, 37, 38, 39, 40, 41, 42, 43, 44, 45';
+  const p1=document.getElementById('pm-img-preview'); if(p1) p1.innerHTML='';
+  const p2=document.getElementById('pm-imgs-preview'); if(p2) p2.innerHTML='';
+  document.getElementById('productModal').classList.add('open');
+}
+function closeProductModal() { document.getElementById('productModal').classList.remove('open'); }
+function editProduct(id) {
+  const p = DB.products.find(x => x.id===id);
+  if (!p) return;
+  document.getElementById('productModalTitle').textContent = 'Edit Product';
+  document.getElementById('pm-id').value = p.id;
+  document.getElementById('pm-title').value = p.title;
+  document.getElementById('pm-price').value = p.price;
+  document.getElementById('pm-compare').value = p.compare||'';
+  document.getElementById('pm-collection').value = p.collection||'';
+  document.getElementById('pm-status').value = p.status||'active';
+  document.getElementById('pm-image').value = p.image.length<500?p.image:'[uploaded]';
+  document.getElementById('pm-images').value = (p.images||[]).filter(x=>x.length<500).join(', ');
+  document.getElementById('pm-video').value = p.video||'';
+  document.getElementById('pm-sizes').value = (p.sizes||[]).join(', ');
+  document.getElementById('pm-desc').value = p.desc||'';
+  document.getElementById('pm-slug').value = p.slug||'';
+  // Previews
+  const p1=document.getElementById('pm-img-preview');
+  if(p1 && p.image) p1.innerHTML = isVideoUrl(p.image)?`<video src="${p.image.length<200?p.image:''}" style="width:64px;height:64px;object-fit:cover" muted></video>`:`<img src="${p.image.length<200?p.image:''}" alt="" onerror="this.style.display='none'">`;
+  document.getElementById('productModal').classList.add('open');
+}
+async function saveProduct() {
+  const id = document.getElementById('pm-id').value || 'p'+Date.now();
+  const title = document.getElementById('pm-title').value.trim();
+  if (!title) { showToast('Title is required'); return; }
+  const imgVal = document.getElementById('pm-image').value.trim();
+  const product = {
+    id, title,
+    price: parseFloat(document.getElementById('pm-price').value)||0,
+    compare: parseFloat(document.getElementById('pm-compare').value)||null,
+    collection: document.getElementById('pm-collection').value,
+    status: document.getElementById('pm-status').value,
+    image: imgVal,
+    images: document.getElementById('pm-images').value.split(',').map(s=>s.trim()).filter(Boolean),
+    video: document.getElementById('pm-video').value.trim(),
+    sizes: document.getElementById('pm-sizes').value.split(',').map(s=>s.trim()).filter(Boolean),
+    desc: document.getElementById('pm-desc').value.trim(),
+    slug: document.getElementById('pm-slug').value.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
+  };
+  await dbUpsert('products', product);
+  closeProductModal();
+  loadAdminData();
+  renderFeatured();
+  renderCollections();
+  if (currentPage==='catalog') renderCatalog();
+  showToast('Product saved!');
+}
+
+// ===================================================================
+// COLLECTION MODAL
+// ===================================================================
+function openCollectionModal() {
+  document.getElementById('collectionModalTitle').textContent = 'Add Collection';
+  ['cm-id','cm-name','cm-slug','cm-image'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const p=document.getElementById('cm-img-preview');if(p)p.innerHTML='';
+  document.getElementById('collectionModal').classList.add('open');
+}
+function editCollection(id) {
+  const c = DB.collections.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('collectionModalTitle').textContent='Edit Collection';
+  document.getElementById('cm-id').value=c.id;
+  document.getElementById('cm-name').value=c.name;
+  document.getElementById('cm-slug').value=c.slug;
+  document.getElementById('cm-image').value=c.image&&c.image.length<500?c.image:'';
+  document.getElementById('collectionModal').classList.add('open');
+}
+async function saveCollection() {
+  const id = document.getElementById('cm-id').value||'c'+Date.now();
+  const name = document.getElementById('cm-name').value.trim();
+  if(!name){showToast('Name required');return;}
+  const col = {
+    id, name,
+    slug: document.getElementById('cm-slug').value.trim()||name.toLowerCase().replace(/\s+/g,'-'),
+    image: document.getElementById('cm-image').value.trim()
+  };
+  await dbUpsert('collections', col);
+  closeModal('collectionModal');
+  loadAdminData();
+  renderCollections();
+  showToast('Collection saved! It now appears in the landing page and filter.');
+}
+
+// ===================================================================
+// STORY MODAL
+// ===================================================================
+function openStoryModal() {
+  document.getElementById('storyModalTitle').textContent='Add Story';
+  ['sm-id','sm-title','sm-date','sm-image','sm-excerpt','sm-content'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const p=document.getElementById('sm-img-preview');if(p)p.innerHTML='';
+  document.getElementById('storyModal').classList.add('open');
+}
+function editStory(id) {
+  const s=DB.stories.find(x=>x.id===id);
+  if(!s)return;
+  document.getElementById('storyModalTitle').textContent='Edit Story';
+  document.getElementById('sm-id').value=s.id;
+  document.getElementById('sm-title').value=s.title;
+  document.getElementById('sm-date').value=s.date;
+  document.getElementById('sm-image').value=s.image&&s.image.length<500?s.image:'';
+  document.getElementById('sm-excerpt').value=s.excerpt;
+  document.getElementById('sm-content').value=s.content||'';
+  document.getElementById('storyModal').classList.add('open');
+}
+async function saveStory() {
+  const id=document.getElementById('sm-id').value||'s'+Date.now();
+  const title=document.getElementById('sm-title').value.trim();
+  if(!title){showToast('Title required');return;}
+  await dbUpsert('stories',{id,title,date:document.getElementById('sm-date').value,image:document.getElementById('sm-image').value.trim(),excerpt:document.getElementById('sm-excerpt').value.trim(),content:document.getElementById('sm-content').value.trim()});
+  closeModal('storyModal');loadAdminData();renderStories();showToast('Story saved!');
+}
+
+// ===================================================================
+// HERO MODAL (with video support)
+// ===================================================================
+function openHeroModal() {
+  document.getElementById('heroModalTitle').textContent='Add Hero Slide';
+  ['hm-id','hm-image','hm-title','hm-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('hm-btn').value='Shop Now!';
+  document.getElementById('hm-order').value='0';
+  document.getElementById('hm-type').value='image';
+  const p=document.getElementById('hm-img-preview');if(p)p.innerHTML='';
+  document.getElementById('heroModal').classList.add('open');
+}
+function editHero(id) {
+  const h=DB.hero.find(x=>x.id===id);
+  if(!h)return;
+  document.getElementById('heroModalTitle').textContent='Edit Slide';
+  document.getElementById('hm-id').value=h.id;
+  document.getElementById('hm-image').value=h.image&&h.image.length<500?h.image:'';
+  document.getElementById('hm-title').value=h.title||'';
+  document.getElementById('hm-desc').value=h.desc||'';
+  document.getElementById('hm-btn').value=h.btn||'Shop Now!';
+  document.getElementById('hm-order').value=h.order||0;
+  document.getElementById('hm-type').value=h.type||'image';
+  document.getElementById('heroModal').classList.add('open');
+}
+async function saveHeroSlide() {
+  const id=document.getElementById('hm-id').value||'h'+Date.now();
+  const image=document.getElementById('hm-image').value.trim();
+  if(!image){showToast('Image/video URL required');return;}
+  await dbUpsert('hero',{id,image,type:document.getElementById('hm-type').value||'image',title:document.getElementById('hm-title').value.trim(),desc:document.getElementById('hm-desc').value.trim(),btn:document.getElementById('hm-btn').value.trim()||'Shop Now!',order:parseInt(document.getElementById('hm-order').value)||0});
+  closeModal('heroModal');loadAdminData();buildHero();heroIdx=0;goHero(0);showToast('Slide saved!');
+}
+
+// ===================================================================
+// DELETE
+// ===================================================================
+async function deleteItem(table, id) {
+  if (!confirm('Delete this item?')) return;
+  await dbDelete(table, id);
+  loadAdminData();
+  buildHero(); renderCollections(); renderFeatured(); renderStories();
+  if (currentPage==='catalog') renderCatalog();
+  showToast('Deleted!');
+}
+
+// ===================================================================
+// SETTINGS
+// ===================================================================
+async function saveSettings() {
+  const v = id => document.getElementById(id)?.value || '';
+  const settings = {
+    sitename:v('s-sitename'), email:v('s-email'), instagram:v('s-instagram'),
+    whatsapp:v('s-whatsapp'), announce:v('s-announce'), footer_about:v('s-footer-about'),
+    newsletter_title:v('s-newsletter-title'), newsletter_desc:v('s-newsletter-desc'), copyright:v('s-copyright'),
+  };
+  DB.settings = settings; saveLocalDB('settings');
+  if (sb) { try { await sb.from('site_settings').upsert({id:'main',...settings}); } catch(e){} }
+  applySettings(settings); showToast('Settings saved!');
+}
+
+function applySettings(s) {
+  if (!s || !Object.keys(s).length) s = DB.settings;
+  if (!s) return;
+  const set = (id, val) => { const el=document.getElementById(id); if(el&&val) el.textContent=val; };
+  set('announce-text', s.announce); set('footer-about', s.footer_about);
+  set('newsletter-title', s.newsletter_title); set('newsletter-desc', s.newsletter_desc);
+  set('footer-copyright', s.copyright); set('footer-email', s.email?'Email: '+s.email:'');
+  set('footer-instagram', s.instagram?'Instagram: '+s.instagram:'');
+}
+
+function exportSubscribers() {
+  const csv = 'Email,Date\n' + DB.subscribers.map(s=>`${s.email},${s.date||''}`).join('\n');
+  const a = document.createElement('a'); a.href='data:text/csv,'+encodeURIComponent(csv); a.download='subscribers.csv'; a.click();
+}
+
+// ===================================================================
+// MODAL HELPERS
+// ===================================================================
+function closeModal(id) { const el=document.getElementById(id); if(el) el.classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) { if (e.target===this) this.classList.remove('open'); });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('search-overlay').classList.remove('open');
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  }
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') openAdmin();
+});
+
+// Admin button in footer
+document.addEventListener('DOMContentLoaded', () => {
+  const footer = document.getElementById('site-footer');
+  if (footer) {
+    const adminLink = document.createElement('div');
+    adminLink.style.cssText = 'text-align:center;padding:8px';
+    adminLink.innerHTML = '<button onclick="openAdmin()" style="font-size:10px;color:#bbb;background:none;border:none;cursor:pointer;letter-spacing:.12em;text-transform:uppercase">⚙ Admin</button>';
+    footer.appendChild(adminLink);
+  }
+});
+
+// ===================================================================
+// INIT
+// ===================================================================
+buildHero();
+startHeroAuto();
+renderCollections();
+renderFeatured();
+renderStories();
+applySettings();
+updateCartUI();
+
+// Try Supabase connection on load
+setTimeout(() => {
+  if (sb) {
+    dbGet('products').then(d => { if(d&&d.length) { renderCollections();renderFeatured();renderStories();buildHero();startHeroAuto(); } });
+    dbGet('collections').then(d => { if(d&&d.length) { renderCollections(); rebuildCollectionFilters(); } });
+    dbGet('hero').then(d => { if(d&&d.length) { buildHero();startHeroAuto(); } });
+    dbGet('stories').then(() => renderStories());
+    dbGet('subscribers').then(() => {});
+  }
+}, 800);
+</script>
+
+<!--
+SUPABASE SQL SCHEMA — Run in Supabase SQL Editor:
+
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY, title TEXT NOT NULL, slug TEXT, price NUMERIC, compare NUMERIC,
+  collection TEXT, status TEXT DEFAULT 'active', image TEXT, images TEXT[], video TEXT,
+  sizes TEXT[], desc TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS collections (
+  id TEXT PRIMARY KEY, name TEXT NOT NULL, slug TEXT, image TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS stories (
+  id TEXT PRIMARY KEY, title TEXT NOT NULL, date TEXT, image TEXT,
+  excerpt TEXT, content TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS hero (
+  id TEXT PRIMARY KEY, image TEXT NOT NULL, type TEXT DEFAULT 'image',
+  title TEXT, desc TEXT, btn TEXT DEFAULT 'Shop Now!', "order" INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS site_settings (
+  id TEXT PRIMARY KEY DEFAULT 'main', sitename TEXT, email TEXT, instagram TEXT,
+  whatsapp TEXT, announce TEXT, footer_about TEXT, newsletter_title TEXT,
+  newsletter_desc TEXT, copyright TEXT, updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS subscribers (
+  id TEXT PRIMARY KEY, email TEXT UNIQUE NOT NULL, date TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE collections ENABLE ROW LEVEL SECURITY;
+ALTER TABLE stories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE hero ENABLE ROW LEVEL SECURITY;
+ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+-- Public read
+CREATE POLICY "Public read" ON products FOR SELECT USING (true);
+CREATE POLICY "Public read" ON collections FOR SELECT USING (true);
+CREATE POLICY "Public read" ON stories FOR SELECT USING (true);
+CREATE POLICY "Public read" ON hero FOR SELECT USING (true);
+CREATE POLICY "Public read" ON site_settings FOR SELECT USING (true);
+-->
+</body>
+</html>
